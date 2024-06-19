@@ -1,20 +1,21 @@
-# Polarion ALM extension to <...>
+# JSON Editor Extension for Polarion ALM
 
-This Polarion extension provides possibility to <...>
+This Polarion extension provides possibility to edit JSON files as WorkItem attachments.
+
 ## Build
 
-This extension can be produced using maven:
+JSON editor extension can be produced using maven:
 ```
 mvn clean package
 ```
 
 ## Installation to Polarion
 
-To install the extension to Polarion `ch.sbb.polarion.extension.<extension_name>-<version>.jar`
-should be copied to `<polarion_home>/polarion/extensions/ch.sbb.polarion.extension.<extension_name>/eclipse/plugins`
+To install JSON editor extension to Polarion `ch.sbb.polarion.extension.json.editor-<version>.jar` should be copied to `<polarion_home>/polarion/extensions/json-editor/eclipse/plugins`
+
 It can be done manually or automated using maven build:
-```
-mvn clean install -P polarion2304,install-to-local-polarion
+```bash
+mvn clean install -Pinstall-to-local-polarion
 ```
 For automated installation with maven env variable `POLARION_HOME` should be defined and point to folder where Polarion is installed.
 
@@ -22,15 +23,38 @@ Changes only take effect after restart of Polarion.
 
 ## Polarion configuration
 
-<...>
+### JSON editor to appear on a WorkItem page
 
+1. Open a project which WorkItem pages should display the editor
+2. On the top of the project's navigation pane click ⚙ (Actions) ➙ 🔧 Administration. Project's administration page will be opened.
+3. On the administration's navigation pane select Work Items ➙ Form Configuration.
+4. On the form configuration page you will see 2 sections: Form Filters and Form Layouts.
+5. In the table of Form Layouts section find line with WorkItem's type where editor should appear and click 📝 Edit
+6. In opened Form Layout Configuration editor find a line with code:
+   ```xml
+   …
+   <field id="description"/>
+   …
+   ```
+7. Insert following new line after it (with explicit syntax validation on submit):
+   ```xml
+   …
+   <extension id="json-editor" label="JSON Editor" validateOnSave="true"/>
+   …
+   ```
+   Or following new line after it (without syntax validation on submit):
+   ```xml
+   …
+   <extension id="json-editor" label="JSON Editor" validateOnSave="false"/>
+   …
+   ```
+8. Save changes by clicking 💾 Save
 
-## Extension Configuration
+## Changelog
 
-<...>
-
-
-## Usage
-
-<...>
-
+| Version | Changes                                                                                                                                                                                                       |
+|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| v1.5.0  | About page extended with help and icon                                                                                                                                                                        |
+| v1.4.0  | * Changed the way of loading attachment content on the page<br/> * Separate endpoints for creating and updating workItem<br/> * Added swagger annotations<br/> * Refactoring<br/> * Update maven dependencies |
+| v1.3.0  | * Update polarion version<br/>* Added "about page" for json editor plugin<br/>* Implemented ApiController<br/> * Refactoring<br/>Update maven dependencies                                                    |
+| v1.2.0  | Initial release                                                                                                                                                                                               |

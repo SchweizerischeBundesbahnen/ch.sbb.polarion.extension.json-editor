@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module id="ch.sbb.polarion.extension.json.editor" version="1.0.0">
+    <contribution configuration-id="com.polarion.xray.webui.administrationPageExtenders">
+        <extender name="About"
+                  parentNodeName="JSON Editor"
+                  parentNodeIconUrl="/polarion/icons/default/topicIcons/documentsAndWiki.svg"
+                  iconUrl="/polarion/icons/default/topicIconsSmall/documentsAndWiki.svg"
+                  pageUrl="/polarion/json-editor-admin/pages/about.jsp"
+                  projectScope="true"
+                  repositoryScope="true"/>
+        <extender name="REST API"
+                  parentNodeName="JSON Editor"
+                  parentNodeIconUrl="/polarion/icons/default/topicIcons/documentsAndWiki.svg"
+                  iconUrl="/polarion/icons/default/topicIconsSmall/documentsAndWiki.svg"
+                  pageUrl="/polarion/json-editor/rest/swagger"
+                  projectScope="true"
+                  repositoryScope="true"/>
+    </contribution>
+</module>

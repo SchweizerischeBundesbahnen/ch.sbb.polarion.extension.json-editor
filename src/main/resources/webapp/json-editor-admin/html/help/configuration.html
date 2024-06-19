@@ -1,0 +1,41 @@
+<h1>JSON Editor Extension for Polarion ALM</h1>
+
+<p>This Polarion extension provides possibility to edit JSON files as WorkItem attachments.</p>
+
+<h2>Polarion configuration</h2>
+
+<h3>JSON editor to appear on a WorkItem page</h3>
+<ol>
+    <li>Open a project which WorkItem pages should display the editor</li>
+    <li>On the top of the project's navigation pane click ⚙ (Actions) ➙ 🔧 Administration. Project's administration page will be opened.</li>
+    <li>On the administration's navigation pane select Work Items ➙ Form Configuration.</li>
+    <li>On the form configuration page you will see 2 sections: Form Filters and Form Layouts.</li>
+    <li>In the table of Form Layouts section find line with WorkItem's type where editor should appear and click 📝 Edit</li>
+    <li>In opened Form Layout Configuration editor find a line with code:
+        <pre>
+            <code data-language="xml">
+…
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">field</span> <span class="cm-attribute">id</span>=<span class="cm-string">"description"</span><span class="cm-tag cm-bracket">/&gt;</span>
+…
+            </code>
+        </pre>
+    </li>
+    <li>Insert following new line after it (with explicit syntax validation on submit):
+        <pre>
+            <code data-language="xml">
+…
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">extension</span> <span class="cm-attribute">id</span>=<span class="cm-string">"json-editor"</span> <span class="cm-attribute">label</span>=<span class="cm-string">"JSON Editor"</span> <span class="cm-attribute">validateOnSave</span>=<span class="cm-string">"true"</span><span class="cm-tag cm-bracket">/&gt;</span>
+…
+            </code>
+        </pre>
+        Or following new line after it (without syntax validation on submit):
+        <pre>
+            <code data-language="xml">
+…
+<span class="cm-tag cm-bracket">&lt;</span><span class="cm-tag">extension</span> <span class="cm-attribute">id</span>=<span class="cm-string">"json-editor"</span> <span class="cm-attribute">label</span>=<span class="cm-string">"JSON Editor"</span> <span class="cm-attribute">validateOnSave</span>=<span class="cm-string">"false"</span><span class="cm-tag cm-bracket">/&gt;</span>
+…
+            </code>
+        </pre>
+    </li>
+    <li>Save changes by clicking 💾 Save</li>
+</ol>
