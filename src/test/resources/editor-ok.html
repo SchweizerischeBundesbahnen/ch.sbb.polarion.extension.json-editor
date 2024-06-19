@@ -1,0 +1,40 @@
+<link rel='stylesheet' href='/polarion/json-editor/ui/css/petrel.css?bundle=202311140729'>
+<link rel='stylesheet' href='/polarion/json-editor/ui/css/highlightjs.css?bundle=202311140729'>
+<link rel='stylesheet' href='/polarion/json-editor/ui/css/json-editor.css?bundle=202311140729'>
+<div class='selector-wrapper'>
+    <label for='editor-selector'>File:</label>
+    <select id='editor-selector' onchange="handleEditorChange(this, 'null', 'null')">
+        <option value='testAttachmentId'>testAttachment.json</option>
+        <option value=''>New</option>
+    </select>
+    <span class='new-file-name' id='new-file-name-prefix'>null-</span>
+    <input type='text' id='new-file-input' class='new-file-name' oninput='updateEditButtonEnablement(event.target.value)'/>
+    <span class='new-file-name ml-2'>.json</span>
+</div>
+<div>
+    <span id='editor-warning'></span>
+    <span id='error-message'></span>
+</div>
+
+<div class='editor-buttons'>
+    <button type='button' id='edit-json-button' disabled onclick='handleEditJson()'>
+        <img class='append-build-number' src='/polarion/ria/images/actions/edit.gif'>Edit
+    </button>
+    <button type='button' class='divider'>&nbsp;</button>
+    <button type='button' id='validate-json-button' disabled onclick='handleValidateJson()'>
+        <img class='append-build-number' src='/polarion/icons/default/enums/req_status_reviewed.gif'>Validate
+    </button>
+    <button type='button' id='save-json-button' disabled onclick="saveJson('null', 'null', false)">
+        <img class='append-build-number' src='/polarion/ria/images/actions/save.gif'>Save
+    </button>
+    <button type='button' id='cancel-edit-json-button' disabled onclick="handleCancelEditJson('null', 'null')">
+        <img class='append-build-number' src='/polarion/ria/images/actions/cancel.gif'>Cancel
+    </button>
+</div>
+<div class='validation-result'>
+    <span id='json-validation-result'></span>
+</div>
+<div class='editor-wrapper'>
+    <div id='jsonCodeEditor'></div>
+</div>
+<script type="module" src="host/polarion/json-editor/ui/js/hljs-editor.js?bundle=d2f53f62-c8d7-4273-ae9a-79fcbfaedc47"></script><script type="text/javascript" src="host/polarion/json-editor/ui/js/json-editor.js?bundle=202311140729"></script><script type="text/javascript" src="host/polarion/json-editor/ui/js/validation/json2.js?bundle=202311140729"></script><script type="text/javascript" src="host/polarion/json-editor/ui/js/validation/json-lint.js?bundle=202311140729"></script><script type="text/javascript" src="host/polarion/json-editor/ui/generic/js/common.js?bundle=202311140729"></script>

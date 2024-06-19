@@ -1,0 +1,105 @@
+.selector-wrapper label {
+    margin-right: 5px;
+    color: #595959;
+}
+
+#editor-selector {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    background: transparent url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAGCAYAAADgzO9IAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAOUlEQVR4nGNgwAOKGRgY/qNhkBgDCwMDw0UkwasMDAysMF22DAwM/6ASjuhGLmVgYFiCzS5JKAYDACJtDIY1VpdwAAAAAElFTkSuQmCC") no-repeat;
+    background-position: calc(100% - 1rem) 55% !important;
+    padding: 5px 3rem 5px 1rem;
+    font-weight: 600;
+    font-family: "Segoe UI", "Selawik", "Open Sans", Arial, sans-serif;
+    font-size: 13px;
+    border: 1px solid #969696;
+    border-radius: 2px;
+}
+
+#new-file-input {
+    padding: 4px;
+    font-family: "Segoe UI", "Selawik", "Open Sans", Arial, sans-serif;
+    font-size: 13px;
+}
+
+#editor-selector:hover:not([disabled]), #new-file-input:hover:not([disabled]) {
+    box-shadow: 0 3px 6px 0 rgb(0 0 0 / 30%);
+    border: 1px solid #969696;
+}
+
+#editor-selector:focus, #new-file-input:focus {
+    outline: none;
+    border: 1px solid #3296B9;
+    box-shadow: 0 3px 6px 0 rgb(0 0 0 / 30%);
+}
+
+.editor-buttons {
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.editor-buttons button {
+    background-color: transparent;
+    border: 1px solid #DEDEDE;
+    color: #555;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.editor-buttons button:not(:first-child) {
+    margin-left: 5px;
+}
+
+.editor-buttons button:disabled {
+    text-shadow: white 1px 1px 0.01em;
+    color: #C9D1D7;
+    cursor: default;
+}
+
+.editor-buttons .divider {
+    padding: 4px 0;
+    width: 1px;
+    border-right-color: #fff;
+    border-left-color: #ccc;
+}
+
+.editor-buttons button img {
+    margin-right: 6px;
+    vertical-align: bottom;
+}
+
+.editor-buttons button:disabled img {
+    opacity: 0.3;
+}
+
+.validation-pass {
+    color: green;
+}
+
+.validation-fail, .line-with-error {
+    color: red;
+}
+
+#jsonCodeEditor {
+    border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+#editor-warning, #error-message {
+    color: red;
+}
+
+#new-file-name-prefix {
+    margin-left: 5px;
+    margin-right: -2px;
+}
+
+.validation-result {
+    margin-bottom: .5em;
+}
+
+.ml-2 {
+    margin-left: -2px;
+}

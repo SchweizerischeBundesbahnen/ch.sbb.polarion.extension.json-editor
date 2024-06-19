@@ -1,0 +1,39 @@
+<link rel='stylesheet' href='/polarion/json-editor/ui/css/petrel.css?bundle=%1$s'>
+<link rel='stylesheet' href='/polarion/json-editor/ui/css/highlightjs.css?bundle=%1$s'>
+<link rel='stylesheet' href='/polarion/json-editor/ui/css/json-editor.css?bundle=%1$s'>
+<div class='selector-wrapper'>
+    <label for='editor-selector'>File:</label>
+    <select id='editor-selector' onchange="handleEditorChange(this, '%2$s', '%3$s')">
+        %4$s
+        <option value=''>New</option>
+    </select>
+    <span class='new-file-name' id='new-file-name-prefix'>%3$s-</span>
+    <input type='text' id='new-file-input' class='new-file-name' oninput='updateEditButtonEnablement(event.target.value)'/>
+    <span class='new-file-name ml-2'>.json</span>
+</div>
+<div>
+    <span id='editor-warning'></span>
+    <span id='error-message'></span>
+</div>
+
+<div class='editor-buttons'>
+    <button type='button' id='edit-json-button' disabled onclick='handleEditJson()'>
+        <img class='append-build-number' src='/polarion/ria/images/actions/edit.gif'>Edit
+    </button>
+    <button type='button' class='divider'>&nbsp;</button>
+    <button type='button' id='validate-json-button' disabled onclick='handleValidateJson()'>
+        <img class='append-build-number' src='/polarion/icons/default/enums/req_status_reviewed.gif'>Validate
+    </button>
+    <button type='button' id='save-json-button' disabled onclick="saveJson('%2$s', '%3$s', %5$s)">
+        <img class='append-build-number' src='/polarion/ria/images/actions/save.gif'>Save
+    </button>
+    <button type='button' id='cancel-edit-json-button' disabled onclick="handleCancelEditJson('%2$s', '%3$s')">
+        <img class='append-build-number' src='/polarion/ria/images/actions/cancel.gif'>Cancel
+    </button>
+</div>
+<div class='validation-result'>
+    <span id='json-validation-result'></span>
+</div>
+<div class='editor-wrapper'>
+    <div id='jsonCodeEditor'></div>
+</div>
