@@ -1,4 +1,18 @@
-# Changelog before migration to conventional commits
+# Changelog
+
+## 1.5.0 (2024-06-25)
+
+
+### Features
+
+* about page help is generated based on README.md ([#6](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/issues/6)) ([9d0fc8c](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/commit/9d0fc8c3f0afe185a0054dd10ed0a2190119e2a4))
+
+
+### Miscellaneous Chores
+
+* release 1.5.0 ([#4](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/issues/4)) ([d000c6e](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/commit/d000c6e19983b631255195ba14023a2c93d9b1a3))
+
+## Changelog before migration to conventional commits
 
 | Version | Changes                                                                                                                                                                                                       |
 |---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
