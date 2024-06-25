@@ -5,7 +5,7 @@ This Polarion extension provides possibility to edit JSON files as WorkItem atta
 ## Build
 
 JSON editor extension can be produced using maven:
-```
+```bash
 mvn clean package
 ```
 
@@ -49,12 +49,3 @@ Changes only take effect after restart of Polarion.
    …
    ```
 8. Save changes by clicking 💾 Save
-
-## Changelog
-
-| Version | Changes                                                                                                                                                                                                       |
-|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| v1.5.0  | About page extended with help and icon                                                                                                                                                                        |
-| v1.4.0  | * Changed the way of loading attachment content on the page<br/> * Separate endpoints for creating and updating workItem<br/> * Added swagger annotations<br/> * Refactoring<br/> * Update maven dependencies |
-| v1.3.0  | * Update polarion version<br/>* Added "about page" for json editor plugin<br/>* Implemented ApiController<br/> * Refactoring<br/>Update maven dependencies                                                    |
-| v1.2.0  | Initial release                                                                                                                                                                                               |
