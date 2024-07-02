@@ -11,7 +11,7 @@ mvn clean package
 
 ## Installation to Polarion
 
-To install JSON editor extension to Polarion `ch.sbb.polarion.extension.json.editor-<version>.jar` should be copied to `<polarion_home>/polarion/extensions/json-editor/eclipse/plugins`
+To install JSON editor extension to Polarion `ch.sbb.polarion.extension.json-editor-<version>.jar` should be copied to `<polarion_home>/polarion/extensions/json-editor/eclipse/plugins`
 
 It can be done manually or automated using maven build:
 ```bash
