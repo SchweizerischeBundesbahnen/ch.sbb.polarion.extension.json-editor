@@ -41,7 +41,7 @@ class JsonEditorFormExtensionTest {
              MockedStatic<UUID> uuidMockedStatic = mockStatic(UUID.class)) {
             ExtensionInfo info = mock(ExtensionInfo.class);
             extensionInfoMockedStatic.when(ExtensionInfo::getInstance).thenReturn(info);
-            when(info.getVersion()).thenReturn(new Version(null, null, null, null, null, "2023-11-14 07:29"));
+            when(info.getVersion()).thenReturn(Version.builder().bundleBuildTimestamp("2023-11-14 07:29").build());
             SharedContext context = mock(SharedContext.class);
 
             uuidMockedStatic.when(UUID::randomUUID).thenReturn(predefinedUUID);
