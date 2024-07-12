@@ -5,12 +5,43 @@
     <parent>
         <groupId>ch.sbb.polarion.extensions</groupId>
         <artifactId>ch.sbb.polarion.extension.generic</artifactId>
-        <version>6.0.3</version>
+        <version>6.2.0</version>
     </parent>
 
     <artifactId>ch.sbb.polarion.extension.json-editor</artifactId>
     <version>1.6.1-SNAPSHOT</version>
     <packaging>jar</packaging>
+
+    <name>JSON Editor Extension for Polarion ALM</name>
+    <description>This Polarion extension provides possibility to edit JSON files as WorkItem attachments.</description>
+    <url>https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor</url>
+
+    <licenses>
+        <license>
+            <name>The SBB License, Version 1.0</name>
+            <url>https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/blob/main/LICENSES/SBB.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>SBB Polarion Team</name>
+            <email>polarion-opensource@sbb.ch</email>
+            <organization>SBB AG</organization>
+            <organizationUrl>https://www.sbb.ch</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor.git</connection>
+        <developerConnection>scm:git:ssh://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor.git</developerConnection>
+        <url>https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/tree/main</url>
+    </scm>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/issues</url>
+    </issueManagement>
 
     <properties>
         <maven-jar-plugin.Extension-Context>json-editor</maven-jar-plugin.Extension-Context>
@@ -29,6 +60,16 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>ch.sbb.maven.plugins</groupId>
+                <artifactId>markdown2html-maven-plugin</artifactId>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
