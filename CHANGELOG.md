@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.7.0](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/compare/v1.6.0...v1.7.0) (2024-07-16)
+
+
+### Features
+
+* migration to generic v6.2.0 ([#14](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/issues/14)) ([0078582](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/commit/007858214cf598b9ee20580ba9d1d4ec2cc6552c))
+
+
+### Bug Fixes
+
+* **deps:** update dependency ch.sbb.polarion.extensions:ch.sbb.polarion.extension.generic to v6.0.2 ([7c6e0e2](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/commit/7c6e0e21dd65376b3c0cef1cfe2a80e996ca0bc6))
+* **deps:** update dependency ch.sbb.polarion.extensions:ch.sbb.polarion.extension.generic to v6.0.3 ([686ddc7](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/commit/686ddc77b9feb794f4b1b0e729a8c4209ceca7ab))
+* **deps:** update dependency ch.sbb.polarion.extensions:ch.sbb.polarion.extension.generic to v6.3.0 ([#13](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/issues/13)) ([e7430fe](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/commit/e7430fedfe7348fa8f01de327a5379a1e71a91ab))
+* publishing in maven central maven-source-plugin and maven-javadoc-plugin ([#10](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/issues/10)) ([808ae79](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/commit/808ae79fc422535b0b55f78e642586cc86772266))
+
 ## 1.6.0 (2024-07-02)
 
 
