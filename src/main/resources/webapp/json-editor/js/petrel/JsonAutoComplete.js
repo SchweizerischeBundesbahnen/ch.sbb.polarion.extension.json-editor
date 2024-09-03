@@ -6,7 +6,7 @@ export default class JSONAutoComplete extends AutoCompletion {
         this.keyWords = [...JSONAutoComplete.KEYWORDS, ...extraKeyWords]
     }
     autoComplete(word, editor){
-        const searchWord = word.replaceAll(/\(|{|;/g, "")
+        const searchWord = word.replaceAll(/[({;]/g, "")
 
         const ret = []
         if (searchWord == "")

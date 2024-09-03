@@ -15,7 +15,7 @@ const codeEditor = new CodeEditor(element, {
 codeEditor.setHighlighter(code => hljs.highlight(code, {language: 'json', ignoreIllegals: true}).value);
 
 const editorSelector = document.getElementById("editor-selector");
-if (editorSelector && editorSelector.value) {
+if (editorSelector?.value) {
     codeEditor.setValue(editorSelector.getElementsByTagName("option")[0].value);
 } else {
     codeEditor.setValue("");

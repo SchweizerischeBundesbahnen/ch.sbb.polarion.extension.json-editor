@@ -79,7 +79,7 @@ const validateJson = () => {
         document.getElementById("json-validation-result").className = "validation-fail";
         document.getElementById("json-validation-result").style.display = "block";
         const match = e.message.match(/error on line (?<linenumber>\d+):/);
-        if (match && match.groups) {
+        if (match?.groups) {
             globalThis.jsonCodeEditor.setLinesWithError([Number.parseInt(match.groups.linenumber) - 1]);
         }
     }
@@ -119,8 +119,8 @@ const handleEditorChange = (selectObject, projectId, workitemId) => {
         }
         const newFileNameElements = document.getElementsByClassName("new-file-name");
         if (newFileNameElements) {
-            for (let i = 0; i < newFileNameElements.length; i++) {
-                newFileNameElements[i].style.visibility = newFileNameVisibility;
+            for (const element of newFileNameElements) {
+                element.style.visibility = newFileNameVisibility;
             }
         }
         getFileContent(projectId, workitemId, selectObject.value)
@@ -158,26 +158,22 @@ const updateWarning = (newFileName) => {
     const warning = document.getElementById("editor-warning");
     if (SbbCommon.getValueById('editor-selector')) {
         warning.style.display = 'none';
+    } else if (!newFileName) {
+        warning.innerText = "In order to start editing please enter new file name above or choose one of existing files";
+        warning.style.display = 'block';
+    } else if (duplicatesExistingFileName(newFileName)) {
+        warning.innerText = "Entered file name clashes with existent file names, please enter unique name";
+        warning.style.display = 'block';
     } else {
-        if (!newFileName) {
-            warning.innerText = "In order to start editing please enter new file name above or choose one of existing files";
-            warning.style.display = 'block';
-        } else {
-            if (duplicatesExistingFileName(newFileName)) {
-                warning.innerText = "Entered file name clashes with existent file names, please enter unique name";
-                warning.style.display = 'block';
-            } else {
-                warning.style.display = 'none';
-            }
-        }
+        warning.style.display = 'none';
     }
 }
 
 const duplicatesExistingFileName = (newFileName) => {
     const existentFileNames = document.getElementById('editor-selector').options;
     const fileNamePrefix = document.getElementById('new-file-name-prefix').innerText;
-    for (let i = 0; i < existentFileNames.length; i++) {
-        if (existentFileNames[i].innerText === (`${fileNamePrefix}${newFileName}.json`)) {
+    for (const file of existentFileNames) {
+        if (file.innerText === `${fileNamePrefix}${newFileName}.json`) {
             return true;
         }
     }
@@ -185,21 +181,32 @@ const duplicatesExistingFileName = (newFileName) => {
 }
 
 (function () {
-    const imagesToUpdate = document.getElementsByClassName("append-build-number");
-    if (imagesToUpdate && imagesToUpdate.length > 0) {
-        const imagesWithBuildNumber = document.getElementsByClassName("polarion-ToolbarButton-Icon");
-        if (imagesWithBuildNumber && imagesWithBuildNumber.length > 0) {
-            const srcWithBuildNumber = imagesWithBuildNumber[0].getAttribute("src");
-            const buildParamIndex = srcWithBuildNumber.indexOf("?buildId=");
-            if (buildParamIndex >= 0) {
-                const buildParam = srcWithBuildNumber.slice(buildParamIndex);
-                if (buildParam) {
-                    for (let i = 0; i < imagesToUpdate.length; i++) {
-                        imagesToUpdate[i].setAttribute("src", imagesToUpdate[i].getAttribute("src").concat(buildParam));
-                        imagesToUpdate[i].classList.remove("append-build-number");
-                    }
-                }
-            }
+    function getBuildParam(src) {
+        const buildParamIndex = src.indexOf("?buildId=");
+        return buildParamIndex >= 0 ? src.slice(buildParamIndex) : null;
+    }
+
+    function updateImageSrc(images, buildParam) {
+        const imagesArray = Array.from(images);
+        for (const image of imagesArray) {
+            image.setAttribute("src", image.getAttribute("src").concat(buildParam));
+            image.classList.remove("append-build-number");
         }
     }
+
+    function processImages() {
+        const imagesToUpdate = document.getElementsByClassName("append-build-number");
+        if (imagesToUpdate.length === 0) return;
+
+        const imagesWithBuildNumber = document.getElementsByClassName("polarion-ToolbarButton-Icon");
+        if (imagesWithBuildNumber.length === 0) return;
+
+        const srcWithBuildNumber = imagesWithBuildNumber[0].getAttribute("src");
+        const buildParam = getBuildParam(srcWithBuildNumber);
+        if (buildParam) {
+            updateImageSrc(imagesToUpdate, buildParam);
+        }
+    }
+
+    processImages();
 })();
