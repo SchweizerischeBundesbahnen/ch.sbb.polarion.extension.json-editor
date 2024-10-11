@@ -6,6 +6,8 @@ Require-Bundle: com.polarion.portal.tomcat,
  com.polarion.alm.tracker,
  org.glassfish.jersey,
  io.swagger,
+ org.apache.commons.logging,
+ slf4j.api,
  org.springframework.spring-core,
  org.springframework.spring-web
 Guice-Modules: ch.sbb.polarion.extension.json.editor.JsonEditorModule
