@@ -49,3 +49,8 @@ Changes only take effect after restart of Polarion.
    …
    ```
 8. Save changes by clicking 💾 Save
+
+
+### REST API
+
+This extension provides REST API. OpenAPI Specification can be obtained [here](docs/openapi.json).
