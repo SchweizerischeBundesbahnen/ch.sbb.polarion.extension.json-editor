@@ -13,6 +13,10 @@
 
 This Polarion extension provides possibility to edit JSON files as WorkItem attachments.
 
+> [!IMPORTANT]
+> Starting from version 2.0.0 only latest version of Polarion is supported.
+> Right now it is Polarion 2410.
+
 ## Build
 
 This extension can be produced using maven:
