@@ -1,546 +1,280 @@
 {
-  "openapi" : "3.0.1",
-  "info" : {
-    "title" : "JSON Editor REST API",
-    "version" : "v1"
+  "openapi": "3.0.1",
+  "info": {
+    "title": "JSON Editor REST API",
+    "version": "v1"
   },
-  "paths" : {
-    "/api/context" : {
-      "get" : {
-        "operationId" : "getContext",
-        "responses" : {
-          "default" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Context"
+  "paths": {
+    "/api/context": {
+      "get": {
+        "operationId": "getContext",
+        "responses": {
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Context"
                 }
               }
             },
-            "description" : "Context information"
+            "description": "Context information"
           }
         },
-        "summary" : "Returns basic context information of Polarion's extension",
-        "tags" : [ "Extension Information" ]
+        "summary": "Returns basic context information of Polarion's extension",
+        "tags": [
+          "Extension Information"
+        ]
       }
     },
-    "/api/projects/{projectId}/workitems/{workItemId}/attachments" : {
-      "post" : {
-        "operationId" : "createAttachment",
-        "parameters" : [ {
-          "in" : "path",
-          "name" : "projectId",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
+    "/api/projects/{projectId}/workitems/{workItemId}/attachments": {
+      "post": {
+        "operationId": "createAttachment",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "workItemId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
-        }, {
-          "in" : "path",
-          "name" : "workItemId",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "multipart/form-data" : {
-              "schema" : {
-                "type" : "object",
-                "properties" : {
-                  "fileName" : {
-                    "type" : "string"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "properties": {
+                  "fileName": {
+                    "type": "string"
                   }
                 },
-                "required" : [ "fileName" ]
+                "required": [
+                  "fileName"
+                ],
+                "type": "object"
               }
             }
           }
         },
-        "responses" : {
-          "default" : {
-            "content" : {
-              "text/plain" : {
-                "schema" : {
-                  "type" : "string"
+        "responses": {
+          "default": {
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
                 }
               }
             },
-            "description" : "default response"
+            "description": "default response"
           }
         },
-        "summary" : "Create new attachment with file name provided.",
-        "tags" : [ "Attachments" ]
+        "summary": "Create new attachment with file name provided.",
+        "tags": [
+          "Attachments"
+        ]
       }
     },
-    "/api/projects/{projectId}/workitems/{workItemId}/attachments/{attachmentId}" : {
-      "patch" : {
-        "operationId" : "updateAttachment",
-        "parameters" : [ {
-          "in" : "path",
-          "name" : "projectId",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
+    "/api/projects/{projectId}/workitems/{workItemId}/attachments/{attachmentId}": {
+      "patch": {
+        "operationId": "updateAttachment",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "workItemId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "attachmentId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
-        }, {
-          "in" : "path",
-          "name" : "workItemId",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "in" : "path",
-          "name" : "attachmentId",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "multipart/form-data" : {
-              "schema" : {
-                "type" : "object",
-                "properties" : {
-                  "content" : {
-                    "type" : "string"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "properties": {
+                  "content": {
+                    "type": "string"
                   }
                 },
-                "required" : [ "content" ]
+                "required": [
+                  "content"
+                ],
+                "type": "object"
               }
             }
           }
         },
-        "responses" : {
-          "default" : {
-            "content" : {
-              "text/plain" : {
-                "schema" : {
-                  "type" : "string"
+        "responses": {
+          "default": {
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
                 }
               }
             },
-            "description" : "default response"
+            "description": "default response"
           }
         },
-        "summary" : "Update existing attachment with id provided with new content.",
-        "tags" : [ "Attachments" ]
+        "summary": "Update existing attachment with id provided with new content.",
+        "tags": [
+          "Attachments"
+        ]
       }
     },
-    "/api/projects/{projectId}/workitems/{workItemId}/attachments/{attachmentId}/content" : {
-      "get" : {
-        "operationId" : "getAttachmentContent",
-        "parameters" : [ {
-          "in" : "path",
-          "name" : "projectId",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "in" : "path",
-          "name" : "workItemId",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "in" : "path",
-          "name" : "attachmentId",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "responses" : {
-          "default" : {
-            "content" : {
-              "text/plain" : {
-                "schema" : {
-                  "type" : "string"
-                }
-              }
-            },
-            "description" : "default response"
-          }
-        },
-        "summary" : "Get attachment content by id.",
-        "tags" : [ "Attachments" ]
-      }
-    },
-    "/api/settings" : {
-      "get" : {
-        "operationId" : "readFeaturesList_1",
-        "responses" : {
-          "default" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "string"
-                }
-              }
-            },
-            "description" : "List of supported features"
-          }
-        },
-        "summary" : "Returns the complete list of all supported features",
-        "tags" : [ "Settings" ]
-      }
-    },
-    "/api/settings/{feature}/default-content" : {
-      "get" : {
-        "operationId" : "getDefaultValues_1",
-        "parameters" : [ {
-          "in" : "path",
-          "name" : "feature",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "responses" : {
-          "default" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/SettingsModel"
-                }
-              }
-            },
-            "description" : "Default values"
-          }
-        },
-        "summary" : "Returns default values of specified setting",
-        "tags" : [ "Settings" ]
-      }
-    },
-    "/api/settings/{feature}/names" : {
-      "get" : {
-        "operationId" : "readSettingNames_1",
-        "parameters" : [ {
-          "in" : "path",
-          "name" : "feature",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "responses" : {
-          "default" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/SettingName"
-                }
-              }
-            },
-            "description" : "List of setting names"
-          }
-        },
-        "summary" : "Returns names of specified setting",
-        "tags" : [ "Settings" ]
-      }
-    },
-    "/api/settings/{feature}/names/{name}" : {
-      "delete" : {
-        "operationId" : "deleteSetting_1",
-        "parameters" : [ {
-          "in" : "path",
-          "name" : "feature",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "in" : "path",
-          "name" : "name",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "responses" : {
-          "204" : {
-            "description" : "Setting deleted successfully"
-          }
-        },
-        "summary" : "Deletes specified setting by id",
-        "tags" : [ "Settings" ]
-      },
-      "post" : {
-        "operationId" : "renameSetting_1",
-        "parameters" : [ {
-          "in" : "path",
-          "name" : "feature",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "in" : "path",
-          "name" : "name",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "type" : "string"
-              }
+    "/api/projects/{projectId}/workitems/{workItemId}/attachments/{attachmentId}/content": {
+      "get": {
+        "operationId": "getAttachmentContent",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "workItemId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "attachmentId",
+            "required": true,
+            "schema": {
+              "type": "string"
             }
           }
-        },
-        "responses" : {
-          "204" : {
-            "description" : "Setting name updated successfully"
-          }
-        },
-        "summary" : "Updates name of specified named setting",
-        "tags" : [ "Settings" ]
-      }
-    },
-    "/api/settings/{feature}/names/{name}/content" : {
-      "get" : {
-        "operationId" : "readSetting_1",
-        "parameters" : [ {
-          "in" : "path",
-          "name" : "feature",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "in" : "path",
-          "name" : "name",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "in" : "query",
-          "name" : "revision",
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "responses" : {
-          "default" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/SettingsModel"
+        ],
+        "responses": {
+          "default": {
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
                 }
               }
             },
-            "description" : "Setting content"
+            "description": "default response"
           }
         },
-        "summary" : "Returns values (content) of specified setting by its id and revision",
-        "tags" : [ "Settings" ]
-      },
-      "put" : {
-        "operationId" : "saveSetting_1",
-        "parameters" : [ {
-          "in" : "path",
-          "name" : "feature",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "in" : "path",
-          "name" : "name",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "type" : "string"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "204" : {
-            "description" : "Setting created/updated successfully"
-          }
-        },
-        "summary" : "Creates or updates named setting. Creation scenario will use default setting value if no body specified in the request.",
-        "tags" : [ "Settings" ]
+        "summary": "Get attachment content by id.",
+        "tags": [
+          "Attachments"
+        ]
       }
     },
-    "/api/settings/{feature}/names/{name}/revisions" : {
-      "get" : {
-        "operationId" : "readRevisionsList_1",
-        "parameters" : [ {
-          "in" : "path",
-          "name" : "feature",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "in" : "path",
-          "name" : "name",
-          "required" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "responses" : {
-          "default" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Revision"
+    "/api/version": {
+      "get": {
+        "operationId": "getVersion",
+        "responses": {
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Version"
                 }
               }
             },
-            "description" : "List of revisions"
+            "description": "Version information"
           }
         },
-        "summary" : "Returns revisions history of specified setting with specified id",
-        "tags" : [ "Settings" ]
-      }
-    },
-    "/api/version" : {
-      "get" : {
-        "operationId" : "getVersion",
-        "responses" : {
-          "default" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Version"
-                }
-              }
-            },
-            "description" : "Version information"
-          }
-        },
-        "summary" : "Returns version of Polarion's extension",
-        "tags" : [ "Extension Information" ]
+        "summary": "Returns version of Polarion's extension",
+        "tags": [
+          "Extension Information"
+        ]
       }
     }
   },
-  "components" : {
-    "schemas" : {
-      "Context" : {
-        "type" : "object",
-        "description" : "Represents the context for building URLs related to Polarion services",
-        "properties" : {
-          "baseUrl" : {
-            "type" : "string",
-            "description" : "Returns the base URL constructed with the extension context",
-            "example" : "/polarion/pdf-exporter"
+  "components": {
+    "schemas": {
+      "Context": {
+        "description": "Represents the context for building URLs related to Polarion services",
+        "properties": {
+          "baseUrl": {
+            "description": "Returns the base URL constructed with the extension context",
+            "example": "/polarion/pdf-exporter",
+            "type": "string"
           },
-          "extensionContext" : {
-            "type" : "string",
-            "description" : "The extension context used as a base for URL construction",
-            "example" : "pdf-exporter"
+          "extensionContext": {
+            "description": "The extension context used as a base for URL construction",
+            "example": "pdf-exporter",
+            "type": "string"
           },
-          "restUrl" : {
-            "type" : "string",
-            "description" : "Returns the REST API URL constructed with the extension context",
-            "example" : "/polarion/pdf-exporter/rest"
+          "restUrl": {
+            "description": "Returns the REST API URL constructed with the extension context",
+            "example": "/polarion/pdf-exporter/rest",
+            "type": "string"
           },
-          "swaggerUiUrl" : {
-            "type" : "string",
-            "description" : "Returns the Swagger UI URL for the REST API"
+          "swaggerUiUrl": {
+            "description": "Returns the Swagger UI URL for the REST API",
+            "type": "string"
           }
-        }
+        },
+        "type": "object"
       },
-      "Revision" : {
-        "type" : "object",
-        "description" : "Revision details",
-        "properties" : {
-          "author" : {
-            "type" : "string",
-            "description" : "The author of the revision"
+      "Version": {
+        "description": "Details about the software version",
+        "properties": {
+          "automaticModuleName": {
+            "description": "The automatic module name",
+            "type": "string"
           },
-          "baseline" : {
-            "type" : "string",
-            "description" : "The baseline of the revision"
+          "bundleBuildTimestamp": {
+            "description": "The build timestamp of the bundle",
+            "type": "string"
           },
-          "date" : {
-            "type" : "string",
-            "description" : "The date of the revision"
+          "bundleName": {
+            "description": "The name of the bundle",
+            "type": "string"
           },
-          "description" : {
-            "type" : "string",
-            "description" : "The description of the revision"
+          "bundleVendor": {
+            "description": "The vendor of the bundle",
+            "type": "string"
           },
-          "name" : {
-            "type" : "string",
-            "description" : "The name of the revision"
+          "bundleVersion": {
+            "description": "The version of the bundle",
+            "type": "string"
+          },
+          "projectURL": {
+            "description": "The project URL",
+            "type": "string"
+          },
+          "supportEmail": {
+            "description": "Support email for the bundle",
+            "type": "string"
           }
-        }
-      },
-      "SettingName" : {
-        "type" : "object",
-        "properties" : {
-          "name" : {
-            "type" : "string",
-            "description" : "The name of the setting"
-          },
-          "scope" : {
-            "type" : "string",
-            "description" : "The scope of the setting"
-          }
-        }
-      },
-      "SettingsModel" : {
-        "type" : "object",
-        "description" : "Settings model",
-        "properties" : {
-          "bundleTimestamp" : {
-            "type" : "string",
-            "description" : "The bundle timestamp of the setting"
-          }
-        }
-      },
-      "Version" : {
-        "type" : "object",
-        "description" : "Details about the software version",
-        "properties" : {
-          "automaticModuleName" : {
-            "type" : "string",
-            "description" : "The automatic module name"
-          },
-          "bundleBuildTimestamp" : {
-            "type" : "string",
-            "description" : "The build timestamp of the bundle"
-          },
-          "bundleName" : {
-            "type" : "string",
-            "description" : "The name of the bundle"
-          },
-          "bundleVendor" : {
-            "type" : "string",
-            "description" : "The vendor of the bundle"
-          },
-          "bundleVersion" : {
-            "type" : "string",
-            "description" : "The version of the bundle"
-          },
-          "projectURL" : {
-            "type" : "string",
-            "description" : "The project URL"
-          },
-          "supportEmail" : {
-            "type" : "string",
-            "description" : "Support email for the bundle"
-          }
-        }
+        },
+        "type": "object"
       }
     }
   }
