@@ -70,12 +70,12 @@ const validateJson = () => {
     try {
         result = jsonlint.parse(globalThis.jsonCodeEditor.getValue());
         if (result) {
-            document.getElementById("json-validation-result").innerHTML = "JSON is valid!";
+            document.getElementById("json-validation-result").innerText = "JSON is valid!";
             document.getElementById("json-validation-result").className = "validation-pass";
             document.getElementById("json-validation-result").style.display = "block";
         }
     } catch (e) {
-        document.getElementById("json-validation-result").innerHTML = e.message;
+        document.getElementById("json-validation-result").innerText = e.message;
         document.getElementById("json-validation-result").className = "validation-fail";
         document.getElementById("json-validation-result").style.display = "block";
         const match = e.message.match(/error on line (?<linenumber>\d+):/);
