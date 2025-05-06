@@ -10,5 +10,4 @@ Require-Bundle: com.polarion.portal.tomcat,
  slf4j.api,
  org.springframework.spring-core,
  org.springframework.spring-web
-Guice-Modules: ch.sbb.polarion.extension.json.editor.JsonEditorModule
 Export-Package: ch.sbb.polarion.extension.json.editor
