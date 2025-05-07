@@ -32,7 +32,7 @@ class JsonEditorFormExtensionTest {
 
     @Test
     @SneakyThrows
-    @SuppressWarnings({"unchecked", "rawtypes", "ResultOfMethodCallIgnored"})
+    @SuppressWarnings({"unchecked", "rawtypes"})
     void renderEditorTest() {
 
         UUID predefinedUUID = UUID.fromString("d2f53f62-c8d7-4273-ae9a-79fcbfaedc47");
@@ -41,7 +41,7 @@ class JsonEditorFormExtensionTest {
              MockedStatic<UUID> uuidMockedStatic = mockStatic(UUID.class)) {
             ExtensionInfo info = mock(ExtensionInfo.class);
             extensionInfoMockedStatic.when(ExtensionInfo::getInstance).thenReturn(info);
-            when(info.getVersion()).thenReturn(Version.builder().bundleBuildTimestamp("2023-11-14 07:29").build());
+            lenient().when(info.getVersion()).thenReturn(Version.builder().bundleBuildTimestamp("2023-11-14 07:29").build());
             SharedContext context = mock(SharedContext.class);
 
             uuidMockedStatic.when(UUID::randomUUID).thenReturn(predefinedUUID);
