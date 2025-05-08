@@ -1,4 +1,6 @@
 Support-Email: polarion-opensource@sbb.ch
+Bundle-Activator: ch.sbb.polarion.extension.json.editor.ExtensionBundleActivator
+Bundle-ActivationPolicy: lazy
 Bundle-Name: JSON Editor Extension for Polarion ALM
 Require-Bundle: com.polarion.portal.tomcat,
  com.polarion.alm.ui,
@@ -10,4 +12,5 @@ Require-Bundle: com.polarion.portal.tomcat,
  slf4j.api,
  org.springframework.spring-core,
  org.springframework.spring-web
+Import-Package: org.osgi.framework
 Export-Package: ch.sbb.polarion.extension.json.editor
