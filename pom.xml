@@ -5,7 +5,7 @@
     <parent>
         <groupId>ch.sbb.polarion.extensions</groupId>
         <artifactId>ch.sbb.polarion.extension.generic</artifactId>
-        <version>9.0.0</version>
+        <version>9.0.1</version>
     </parent>
 
     <artifactId>ch.sbb.polarion.extension.json-editor</artifactId>
@@ -46,7 +46,6 @@
     <properties>
         <maven-jar-plugin.Extension-Context>json-editor</maven-jar-plugin.Extension-Context>
         <maven-jar-plugin.Automatic-Module-Name>ch.sbb.polarion.extension.json_editor</maven-jar-plugin.Automatic-Module-Name>
-        <maven-jar-plugin.BundleActivatorClass>ch.sbb.polarion.extension.json.editor.ExtensionBundleActivator</maven-jar-plugin.BundleActivatorClass>
 
         <web.app.name>${maven-jar-plugin.Extension-Context}</web.app.name>
 
