@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/compare/v2.0.0...v3.0.0) (2025-07-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* Polarion 2506 support ([#52](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/issues/52))
+
+### Features
+
+* Polarion 2506 support ([#52](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/issues/52)) ([0aa4251](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/commit/0aa4251b60134e5a3398f9391fe521f92ae56c6b)), closes [#51](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/issues/51)
+
 ## [2.0.0](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/compare/v1.7.0...v2.0.0) (2025-07-01)
 
 
