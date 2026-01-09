@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>ch.sbb.polarion.extension.json-editor</artifactId>
-    <version>3.0.1-SNAPSHOT</version>
+    <version>4.0.0</version>
     <packaging>jar</packaging>
 
     <name>JSON Editor Extension for Polarion ALM</name>
