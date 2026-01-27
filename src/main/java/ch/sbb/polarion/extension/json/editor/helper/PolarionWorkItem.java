@@ -3,7 +3,6 @@ package ch.sbb.polarion.extension.json.editor.helper;
 import ch.sbb.polarion.extension.generic.service.PolarionService;
 import com.polarion.alm.tracker.model.IAttachment;
 import com.polarion.alm.tracker.model.IWorkItem;
-import com.polarion.core.util.logging.Logger;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +18,6 @@ import java.util.regex.Pattern;
 @UtilityClass
 public class PolarionWorkItem {
 
-    private static final Logger logger = Logger.getLogger(PolarionWorkItem.class);
     public static final String FILE_EXTENSION = ".json";
 
     private static void validateAttachmentName(String workItemId, String fileName) {
@@ -49,7 +47,6 @@ public class PolarionWorkItem {
             return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
         } catch (IOException e) {
             String message = "Error reading attachment '%s' content for project/workitem %s/%s".formatted(attachmentId, projectId, workItemId);
-            logger.error(message, e);
             throw new IllegalArgumentException(message);
         }
     }
@@ -70,7 +67,6 @@ public class PolarionWorkItem {
         }
         String message = "Attachment with the same file name '%1$s' already exists in project/workitem '%2$s/%3$s'"
                 .formatted(fileName, projectId, workItemId);
-        logger.error(message);
         throw new IllegalArgumentException(message);
     }
 
@@ -91,7 +87,6 @@ public class PolarionWorkItem {
             return wiAttachment;
         } catch (IOException e) {
             String message = "Error updating attachment '%s' for project/workitem %s/%s".formatted(attachmentId, projectId, workItemId);
-            logger.error(message, e);
             throw new IllegalArgumentException(message);
         }
     }
