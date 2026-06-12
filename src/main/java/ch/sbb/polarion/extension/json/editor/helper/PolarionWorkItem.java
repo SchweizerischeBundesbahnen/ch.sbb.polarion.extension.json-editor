@@ -7,7 +7,7 @@ import lombok.experimental.UtilityClass;
 import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.NotNull;
 
-import javax.ws.rs.NotFoundException;
+import jakarta.ws.rs.NotFoundException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
