@@ -2,11 +2,14 @@ package ch.sbb.polarion.extension.json.editor;
 
 import ch.sbb.polarion.extension.generic.util.ExtensionInfo;
 import ch.sbb.polarion.extension.generic.util.ScopeUtils;
+import com.polarion.alm.projects.model.IUniqueObject;
 import com.polarion.alm.shared.api.SharedContext;
 import com.polarion.alm.shared.api.transaction.TransactionalExecutor;
 import com.polarion.alm.shared.api.utils.html.HtmlFragmentBuilder;
 import com.polarion.alm.shared.api.utils.links.HtmlLinkFactory;
 import com.polarion.alm.tracker.model.IAttachmentBase;
+import com.polarion.alm.tracker.model.IModule;
+import com.polarion.alm.tracker.model.IWithAttachments;
 import com.polarion.alm.tracker.model.IWorkItem;
 import com.polarion.alm.ui.server.forms.extensions.IFormExtension;
 import com.polarion.alm.ui.server.forms.extensions.IFormExtensionContext;
@@ -18,6 +21,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @SuppressWarnings({"java:S1192"})
@@ -26,6 +31,7 @@ public class JsonEditorFormExtension implements IFormExtension {
     public static final String ID = "json-editor";
     private static final Logger logger = Logger.getLogger(JsonEditorFormExtension.class);
     private static final String BUNDLE_TIMESTAMP = ExtensionInfo.getInstance().getVersion().getBundleBuildTimestampDigitsOnly();
+    private static final Pattern TEMPLATE_PLACEHOLDER = Pattern.compile("\\$\\{(\\w+)}");
 
     @Override
     @Nullable
@@ -47,20 +53,30 @@ public class JsonEditorFormExtension implements IFormExtension {
         return "JSON Editor";
     }
 
+    @SuppressWarnings("rawtypes")
     public String renderEditor(@NotNull SharedContext context, @NotNull IPObject object, boolean validateOnSave) {
         HtmlFragmentBuilder builder = context.createHtmlFragmentBuilderFor().gwt();
 
         try {
-            if (object instanceof IWorkItem workItem) {
-                if (workItem.isPersisted()) {
+            IModule module = object instanceof IModule ? (IModule) object : null;
+            IWorkItem workItem = object instanceof IWorkItem ? (IWorkItem) object : null;
+            if (module != null || workItem != null) {
+                if (object.isPersisted()) {
 
-                    builder.html(ScopeUtils.getFileContent("webapp/json-editor/html/json-editor.html")
-                            .formatted(BUNDLE_TIMESTAMP, workItem.getProjectId(), workItem.getId(), createSelectOptions(workItem), validateOnSave));
+                    Map<String, String> values = Map.of(
+                            "bundle", BUNDLE_TIMESTAMP,
+                            "projectId", ((IUniqueObject) object).getProjectId(),
+                            "entityId", module != null ? module.getModuleName() : workItem.getId(),
+                            "spaceId", module != null ? getSpace(module) : "",
+                            "validateOnSave", String.valueOf(validateOnSave),
+                            "options", createSelectOptions((IWithAttachments) object));
+
+                    builder.html(fillTemplate(ScopeUtils.getFileContent("webapp/json-editor/html/json-editor.html"), values));
 
                     addScripts(builder);
 
                 } else {
-                    builder.tag().div().append().text("JSON editor will be available after Work Item created.");
+                    builder.tag().div().append().text("JSON editor will be available after first save.");
                 }
             }
         } catch (Exception e) {
@@ -73,7 +89,23 @@ public class JsonEditorFormExtension implements IFormExtension {
         return builder.toString();
     }
 
-    private String createSelectOptions(IWorkItem workItem) {
+    private String getSpace(IModule module) {
+        return module.getLocalId().getContainerId().getObjectName();
+    }
+
+    private String fillTemplate(@NotNull String template, @NotNull Map<String, String> values) {
+        Matcher matcher = TEMPLATE_PLACEHOLDER.matcher(template);
+        StringBuilder result = new StringBuilder();
+        while (matcher.find()) {
+            String replacement = values.getOrDefault(matcher.group(1), matcher.group());
+            matcher.appendReplacement(result, Matcher.quoteReplacement(replacement));
+        }
+        matcher.appendTail(result);
+        return result.toString();
+    }
+
+    @SuppressWarnings("rawtypes")
+    private String createSelectOptions(IWithAttachments workItem) {
         IPObjectList<?> attachments = workItem.getAttachments();
         Map<String, String> map = getJsonAttachmentNames(attachments);
         StringBuilder builder = new StringBuilder();

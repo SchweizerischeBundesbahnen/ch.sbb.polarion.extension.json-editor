@@ -1,25 +1,45 @@
-function saveJson(projectId, workItemId, validate) {
-    if (validate === "false" || validateJson()) {
+let editorContext;
+
+const getEditorContext = () => {
+    if (!editorContext) {
+        const dataset = document.querySelector('.selector-wrapper').dataset;
+        editorContext = {
+            projectId: dataset.projectId,
+            entityId: dataset.entityId,
+            spaceId: dataset.spaceId,
+            validateOnSave: dataset.validateOnSave === 'true',
+        };
+    }
+    return editorContext;
+}
+
+const getFileNamePrefix = (cfg) => cfg.spaceId ? '' : cfg.entityId + '-';
+
+function saveJson() {
+    const cfg = getEditorContext();
+    if (!cfg.validateOnSave || validateJson()) {
         document.getElementById("cancel-edit-json-button").disabled = 'true';
         document.getElementById("save-json-button").disabled = 'true';
         globalThis.jsonCodeEditor.readonly = true;
-        const editorSelector = document.getElementById("editor-selector");
-        const attachmentId = editorSelector.value;
+        const attachmentId = document.getElementById("editor-selector").value;
         if (attachmentId !== "") {
-            updateAttachment(projectId, workItemId, attachmentId);
+            updateAttachment(attachmentId);
         } else {
-            const fileName = `${workItemId}-${SbbCommon.getValueById("new-file-input")}.json`;
-            createAttachment(projectId, workItemId, fileName);
+            const fileName = `${getFileNamePrefix(cfg)}${SbbCommon.getValueById("new-file-input")}.json`;
+            createAttachment(fileName);
         }
     }
 }
 
-function updateAttachment(projectId, workItemId, attachmentId) {
+function updateAttachment(attachmentId) {
+    const cfg = getEditorContext();
     const formData = new FormData();
     formData.append("content", globalThis.jsonCodeEditor.getValue());
     SbbCommon.callAsync({
         method: 'PATCH',
-        url: `/polarion/json-editor/rest/internal/projects/${projectId}/workitems/${workItemId}/attachments/${attachmentId}`,
+        url: cfg.spaceId ?
+            `/polarion/json-editor/rest/internal/projects/${cfg.projectId}/documents/${cfg.spaceId}/${cfg.entityId}/attachments/${attachmentId}` :
+            `/polarion/json-editor/rest/internal/projects/${cfg.projectId}/workitems/${cfg.entityId}/attachments/${attachmentId}`,
         body: formData,
         onOk: (_event) => document.location.reload(),
         onError: (status, text) => {
@@ -31,14 +51,17 @@ function updateAttachment(projectId, workItemId, attachmentId) {
     });
 }
 
-function createAttachment(projectId, workItemId, fileName) {
+function createAttachment(fileName) {
+    const cfg = getEditorContext();
     const formData = new FormData();
     formData.append("fileName", fileName);
     SbbCommon.callAsync({
         method: 'POST',
-        url: `/polarion/json-editor/rest/internal/projects/${projectId}/workitems/${workItemId}/attachments`,
+        url: cfg.spaceId ?
+            `/polarion/json-editor/rest/internal/projects/${cfg.projectId}/documents/${cfg.spaceId}/${cfg.entityId}/attachments`:
+            `/polarion/json-editor/rest/internal/projects/${cfg.projectId}/workitems/${cfg.entityId}/attachments`,
         body: formData,
-        onOk: (attachmentId) => updateAttachment(projectId, workItemId, attachmentId),
+        onOk: (attachmentId) => updateAttachment(attachmentId),
         onError: (status, text) => {
             document.getElementById("validate-json-button").disabled = true;
             document.getElementById("json-validation-result").style.display = 'none';
@@ -87,7 +110,7 @@ const validateJson = () => {
     return result;
 }
 
-const handleCancelEditJson = (projectId, workitemId) => {
+const handleCancelEditJson = () => {
     const selectedFile = SbbCommon.getValueById('editor-selector');
     if (!selectedFile || confirm("Are you sure you want to cancel editing and revert changes?")) {
         document.getElementById("editor-selector").disabled = false;
@@ -99,14 +122,14 @@ const handleCancelEditJson = (projectId, workitemId) => {
         document.getElementById("json-validation-result").style.display = "none";
         globalThis.jsonCodeEditor.readonly = true;
         if (selectedFile) {
-            getFileContent(projectId, workitemId, selectedFile);
+            getFileContent(selectedFile);
         }
         globalThis.jsonCodeEditor.setLinesWithError([]);
         globalThis.jsonCodeEditor.update();
     }
 }
 
-const handleEditorChange = (selectObject, projectId, workitemId) => {
+const handleEditorChange = (selectObject) => {
     if (selectObject) {
         let newFileNameVisibility;
         if (selectObject.value) {
@@ -123,11 +146,12 @@ const handleEditorChange = (selectObject, projectId, workitemId) => {
                 element.style.visibility = newFileNameVisibility;
             }
         }
-        getFileContent(projectId, workitemId, selectObject.value)
+        getFileContent(selectObject.value)
     }
 }
 
-function getFileContent(projectId, workItemId, attachmentId) {
+function getFileContent(attachmentId) {
+    const cfg = getEditorContext();
     document.getElementById('error-message').style.display = 'none';
     if (attachmentId === undefined || attachmentId === "") {
         globalThis.jsonCodeEditor.setValue("");
@@ -135,7 +159,9 @@ function getFileContent(projectId, workItemId, attachmentId) {
     }
     SbbCommon.callAsync({
         method: 'GET',
-        url: `/polarion/json-editor/rest/internal/projects/${projectId}/workitems/${workItemId}/attachments/${attachmentId}/content`,
+        url: cfg.spaceId ?
+            `/polarion/json-editor/rest/internal/projects/${cfg.projectId}/documents/${cfg.spaceId}/${cfg.entityId}/attachments/${attachmentId}/content` :
+            `/polarion/json-editor/rest/internal/projects/${cfg.projectId}/workitems/${cfg.entityId}/attachments/${attachmentId}/content`,
         onOk: (responseText) => globalThis.jsonCodeEditor.setValue(responseText),
         onError: (status, text) => {
             document.getElementById("edit-json-button").disabled = true;
@@ -208,5 +234,18 @@ const duplicatesExistingFileName = (newFileName) => {
         }
     }
 
+    function initEditor() {
+        const cfg = getEditorContext();
+        document.getElementById('new-file-name-prefix').innerText = getFileNamePrefix(cfg);
+
+        document.getElementById('editor-selector').addEventListener('change', (event) => handleEditorChange(event.target));
+        document.getElementById('new-file-input').addEventListener('input', (event) => updateEditButtonEnablement(event.target.value));
+        document.getElementById('edit-json-button').addEventListener('click', handleEditJson);
+        document.getElementById('validate-json-button').addEventListener('click', handleValidateJson);
+        document.getElementById('save-json-button').addEventListener('click', saveJson);
+        document.getElementById('cancel-edit-json-button').addEventListener('click', handleCancelEditJson);
+    }
+
     processImages();
+    initEditor();
 })();

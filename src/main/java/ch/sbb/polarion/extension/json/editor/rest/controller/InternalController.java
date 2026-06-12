@@ -35,7 +35,7 @@ public class InternalController {
                                        @Parameter(required = true) @PathParam("workItemId") String workItemId,
                                        @Parameter(required = true) @PathParam("attachmentId") String attachmentId) {
         return TransactionalExecutor.executeSafelyInReadOnlyTransaction(
-                transaction -> PolarionWorkItem.getAttachmentContent(polarionService, projectId, workItemId, attachmentId));
+                transaction -> PolarionWorkItem.getAttachmentContent(polarionService.getWorkItem(projectId, workItemId), attachmentId));
     }
 
     @POST
@@ -48,7 +48,7 @@ public class InternalController {
             @Parameter(required = true) @PathParam("workItemId") String workItemId,
             @Parameter(required = true) @FormDataParam("fileName") String fileName) {
         return TransactionalExecutor.executeInWriteTransaction(
-                transaction -> PolarionWorkItem.createAttachment(polarionService, projectId, workItemId, fileName).getId());
+                transaction -> PolarionWorkItem.createAttachment(polarionService.getWorkItem(projectId, workItemId), fileName).getId());
     }
 
     @PATCH
@@ -62,6 +62,47 @@ public class InternalController {
             @Parameter(required = true) @PathParam("attachmentId") String attachmentId,
             @Parameter(required = true) @FormDataParam("content") String content) {
         return TransactionalExecutor.executeInWriteTransaction(
-                transaction -> PolarionWorkItem.updateAttachment(polarionService, projectId, workItemId, attachmentId, content).getId());
+                transaction -> PolarionWorkItem.updateAttachment(polarionService.getWorkItem(projectId, workItemId), attachmentId, content).getId());
+    }
+
+    @GET
+    @Path("/projects/{projectId}/documents/{spaceId}/{documentName}/attachments/{attachmentId}/content")
+    @Produces(MediaType.TEXT_PLAIN)
+    @Operation(summary = "Get attachment content by id.")
+    public String getDocumentAttachmentContent(@Parameter(required = true) @PathParam("projectId") String projectId,
+                                       @Parameter(required = true) @PathParam("spaceId") String spaceId,
+                                       @Parameter(required = true) @PathParam("documentName") String documentName,
+                                       @Parameter(required = true) @PathParam("attachmentId") String attachmentId) {
+        return TransactionalExecutor.executeSafelyInReadOnlyTransaction(
+                transaction -> PolarionWorkItem.getAttachmentContent(polarionService.getModule(projectId, spaceId, documentName), attachmentId));
+    }
+
+    @POST
+    @Path("/projects/{projectId}/documents/{spaceId}/{documentName}/attachments")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.TEXT_PLAIN)
+    @Operation(summary = "Create new attachment with file name provided.")
+    public String createDocumentAttachment(
+            @Parameter(required = true) @PathParam("projectId") String projectId,
+            @Parameter(required = true) @PathParam("spaceId") String spaceId,
+            @Parameter(required = true) @PathParam("documentName") String documentName,
+            @Parameter(required = true) @FormDataParam("fileName") String fileName) {
+        return TransactionalExecutor.executeInWriteTransaction(
+                transaction -> PolarionWorkItem.createAttachment(polarionService.getModule(projectId, spaceId, documentName), fileName).getId());
+    }
+
+    @PATCH
+    @Path("/projects/{projectId}/documents/{spaceId}/{documentName}/attachments/{attachmentId}")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.TEXT_PLAIN)
+    @Operation(summary = "Update existing attachment with id provided with new content.")
+    public String updateDocumentAttachment(
+            @Parameter(required = true) @PathParam("projectId") String projectId,
+            @Parameter(required = true) @PathParam("spaceId") String spaceId,
+            @Parameter(required = true) @PathParam("documentName") String documentName,
+            @Parameter(required = true) @PathParam("attachmentId") String attachmentId,
+            @Parameter(required = true) @FormDataParam("content") String content) {
+        return TransactionalExecutor.executeInWriteTransaction(
+                transaction -> PolarionWorkItem.updateAttachment(polarionService.getModule(projectId, spaceId, documentName), attachmentId, content).getId());
     }
 }

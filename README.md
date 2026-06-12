@@ -11,7 +11,7 @@
 
 # JSON Editor Extension for Polarion ALM
 
-This Polarion extension provides possibility to edit JSON files as WorkItem attachments.
+This Polarion extension provides possibility to edit JSON files as WorkItem or Document attachments.
 
 > [!IMPORTANT]
 > Starting from version 2.0.0 only latest version of Polarion is supported.
@@ -72,6 +72,33 @@ Changes only take effect after restart of Polarion.
    ```
 8. Save changes by clicking 💾 Save
 
+### JSON editor to appear on a Document's properties pane
+
+1. Open a project which Documents should display the editor
+2. On the top of the project's navigation pane click ⚙ (Actions) ➙ 🔧 Administration. Project's administration page will be opened.
+3. On the administration's navigation pane select Documents & Pages ➙ Document Properties Sidebar.
+4. In opened Edit Project Configuration editor find `sections`-element:
+   ```xml
+   …
+   <sections>
+     <section id="fields"/>
+     …
+   </sections>
+   …
+   ```
+5. And insert following new line inside this element:
+```xml
+   …
+   <extension id="json-editor" label="JSON Editor" validateOnSave="true"/>
+   …
+   ```
+Or following new line after it (without syntax validation on submit):
+   ```xml
+   …
+   <extension id="json-editor" label="JSON Editor" validateOnSave="false"/>
+   …
+   ```
+6. Save changes by clicking 💾 Save
 
 ### REST API
 

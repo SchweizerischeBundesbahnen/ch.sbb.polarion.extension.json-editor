@@ -24,4 +24,19 @@ public class ApiController extends InternalController {
     public String updateAttachment(String projectId, String workItemId, String attachmentId, String content) {
         return polarionService.callPrivileged(() -> super.updateAttachment(projectId, workItemId, attachmentId, content));
     }
+
+    @Override
+    public String getDocumentAttachmentContent(String projectId, String spaceId, String documentName, String attachmentId) {
+        return polarionService.callPrivileged(() -> super.getDocumentAttachmentContent(projectId, spaceId, documentName, attachmentId));
+    }
+
+    @Override
+    public String createDocumentAttachment(String projectId, String spaceId, String documentName, String fileName) {
+        return polarionService.callPrivileged(() -> super.createDocumentAttachment(projectId, spaceId, documentName, fileName));
+    }
+
+    @Override
+    public String updateDocumentAttachment(String projectId, String spaceId, String documentName, String attachmentId, String content) {
+        return polarionService.callPrivileged(() -> super.updateDocumentAttachment(projectId, spaceId, documentName, attachmentId, content));
+    }
 }
