@@ -97,8 +97,9 @@ class JsonEditorFormExtensionTest {
     @SuppressWarnings("ConstantConditions")
     private void renderAndCompareWithResource(SharedContext context, IPObject object, boolean validateOnSave, String resourceFileName) {
         try (InputStream expected = this.getClass().getResourceAsStream("/" + resourceFileName)) {
-            assertEquals(new String(expected.readAllBytes(), StandardCharsets.UTF_8),
-                    new JsonEditorFormExtension().renderEditor(context, object, validateOnSave));
+            // stripTrailing() tolerates the final newline that the end-of-file-fixer pre-commit hook enforces on resources
+            assertEquals(new String(expected.readAllBytes(), StandardCharsets.UTF_8).stripTrailing(),
+                    new JsonEditorFormExtension().renderEditor(context, object, validateOnSave).stripTrailing());
         }
     }
 
