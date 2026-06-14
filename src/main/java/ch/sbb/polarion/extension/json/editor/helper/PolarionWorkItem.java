@@ -12,8 +12,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @UtilityClass
 public class PolarionWorkItem {
@@ -21,10 +19,7 @@ public class PolarionWorkItem {
     public static final String FILE_EXTENSION = ".json";
 
     private static void validateAttachmentName(String workItemId, String fileName) {
-        String regex = "^%s-.*\\%s$".formatted(workItemId, FILE_EXTENSION);
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(fileName);
-        if (!matcher.matches()) {
+        if (!fileName.startsWith(workItemId + "-") || !fileName.endsWith(FILE_EXTENSION)) {
             throw new IllegalArgumentException(
                     "File name pattern mismatch: '%s'. File name must start with '%s', a dash (-), end with %s extension and any characters in between."
                             .formatted(fileName, workItemId, FILE_EXTENSION)
