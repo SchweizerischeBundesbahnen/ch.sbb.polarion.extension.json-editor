@@ -18,7 +18,9 @@ import com.polarion.platform.persistence.model.IPObject;
 import com.polarion.platform.persistence.model.IPObjectList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.springframework.web.util.HtmlUtils;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -58,23 +60,19 @@ public class JsonEditorFormExtension implements IFormExtension {
         HtmlFragmentBuilder builder = context.createHtmlFragmentBuilderFor().gwt();
 
         try {
-            IModule module = object instanceof IModule ? (IModule) object : null;
-            IWorkItem workItem = object instanceof IWorkItem ? (IWorkItem) object : null;
+            IModule module = object instanceof IModule moduleObject ? moduleObject : null;
+            IWorkItem workItem = object instanceof IWorkItem workItemObject ? workItemObject : null;
             if (module != null || workItem != null) {
                 if (object.isPersisted()) {
-
                     Map<String, String> values = Map.of(
                             "bundle", BUNDLE_TIMESTAMP,
-                            "projectId", ((IUniqueObject) object).getProjectId(),
-                            "entityId", module != null ? module.getModuleName() : workItem.getId(),
-                            "spaceId", module != null ? getSpace(module) : "",
+                            "projectId", escapeHtml(((IUniqueObject) object).getProjectId()),
+                            "entityId", escapeHtml(module != null ? module.getModuleName() : workItem.getId()),
+                            "spaceId", escapeHtml(module != null ? getSpace(module) : ""),
                             "validateOnSave", String.valueOf(validateOnSave),
                             "options", createSelectOptions((IWithAttachments) object));
-
                     builder.html(fillTemplate(ScopeUtils.getFileContent("webapp/json-editor/html/json-editor.html"), values));
-
                     addScripts(builder);
-
                 } else {
                     builder.tag().div().append().text("JSON editor will be available after first save.");
                 }
@@ -91,6 +89,10 @@ public class JsonEditorFormExtension implements IFormExtension {
 
     private String getSpace(IModule module) {
         return module.getLocalId().getContainerId().getObjectName();
+    }
+
+    private String escapeHtml(@NotNull String value) {
+        return HtmlUtils.htmlEscape(value, StandardCharsets.UTF_8.name());
     }
 
     private String fillTemplate(@NotNull String template, @NotNull Map<String, String> values) {
@@ -110,7 +112,7 @@ public class JsonEditorFormExtension implements IFormExtension {
         Map<String, String> map = getJsonAttachmentNames(attachments);
         StringBuilder builder = new StringBuilder();
         for (Map.Entry<String, String> entry : map.entrySet()) {
-            builder.append("<option value='%1$s'>%2$s</option>".formatted(entry.getKey(), entry.getValue()));
+            builder.append("<option value='%1$s'>%2$s</option>".formatted(escapeHtml(entry.getKey()), escapeHtml(entry.getValue())));
         }
         return builder.toString();
     }

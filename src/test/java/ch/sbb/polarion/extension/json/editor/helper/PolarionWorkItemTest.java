@@ -155,6 +155,13 @@ class PolarionWorkItemTest {
     }
 
     @Test
+    void createModuleAttachmentInvalidExtension() {
+        assertThatThrownBy(() -> PolarionWorkItem.createAttachment(module, "wrong-name.txt"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("must end with %s extension".formatted(PolarionWorkItem.FILE_EXTENSION));
+    }
+
+    @Test
     void createModuleAttachment() {
         when(module.getAttachments()).thenReturn(attachments);
         when(attachments.stream()).thenReturn(Stream.empty());

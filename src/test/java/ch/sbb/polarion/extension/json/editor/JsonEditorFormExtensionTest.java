@@ -26,6 +26,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.lenient;
@@ -86,10 +87,30 @@ class JsonEditorFormExtensionTest {
             when(moduleAttachments.stream()).thenReturn(Stream.of(attachment));
             renderAndCompareWithResource(context, module, true, "editor-ok-module.html");
 
+            // 3b. special characters in module/space names must be HTML-escaped in the rendered attributes
+            IModule unsafeModule = mock(IModule.class, RETURNS_DEEP_STUBS);
+            when(htmlBuilderTargetSelector.gwt()).thenReturn(createHtmlBuilder());
+            when(unsafeModule.isPersisted()).thenReturn(true);
+            when(unsafeModule.getProjectId()).thenReturn("proj");
+            when(unsafeModule.getModuleName()).thenReturn("a'b<i>");
+            when(unsafeModule.getLocalId().getContainerId().getObjectName()).thenReturn("sp'ace");
+            IPObjectList unsafeAttachments = mock(IPObjectList.class);
+            when(unsafeModule.getAttachments()).thenReturn(unsafeAttachments);
+            when(unsafeAttachments.stream()).thenReturn(Stream.empty());
+            String unsafeRendered = new JsonEditorFormExtension().renderEditor(context, unsafeModule, false);
+            assertThat(unsafeRendered).contains("data-entity-id='a&#39;b&lt;i&gt;'");
+            assertThat(unsafeRendered).contains("data-space-id='sp&#39;ace'");
+            assertThat(unsafeRendered).doesNotContain("a'b<i>");
+
             // 4. exception while building the editor -> error message
             when(htmlBuilderTargetSelector.gwt()).thenReturn(createHtmlBuilder());
             when(workItemAttachments.stream()).thenThrow(new IllegalStateException("emulated exception for testing purposes"));
             renderAndCompareWithResource(context, workItem, false, "editor-exception.html");
+
+            // 5. object that is neither a module nor a work item -> nothing is rendered
+            when(htmlBuilderTargetSelector.gwt()).thenReturn(createHtmlBuilder());
+            String unsupportedRendered = new JsonEditorFormExtension().renderEditor(context, mock(IPObject.class), false);
+            assertThat(unsupportedRendered).isBlank();
         }
     }
 

@@ -74,6 +74,9 @@ public class PolarionWorkItem {
                                                    @NotNull String namePrefix, @NotNull String entityUniqueIdentifier) {
         if (!StringUtils.isEmpty(namePrefix)) {
             validateAttachmentName(namePrefix, fileName);
+        } else if (!fileName.endsWith(FILE_EXTENSION)) {
+            throw new IllegalArgumentException(
+                    "File name '%s' must end with %s extension.".formatted(fileName, FILE_EXTENSION));
         }
 
         IPObjectList<?> attachments = object.getAttachments();
