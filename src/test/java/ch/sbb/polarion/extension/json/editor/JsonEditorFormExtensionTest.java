@@ -10,7 +10,9 @@ import com.polarion.alm.shared.api.utils.html.HtmlFragmentBuilder;
 import com.polarion.alm.shared.api.utils.html.impl.HtmlFragmentBuilderImplStandalone;
 import com.polarion.alm.shared.api.utils.links.HtmlLink;
 import com.polarion.alm.tracker.model.IAttachmentBase;
+import com.polarion.alm.tracker.model.IModule;
 import com.polarion.alm.tracker.model.IWorkItem;
+import com.polarion.platform.persistence.model.IPObject;
 import com.polarion.platform.persistence.model.IPObjectList;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.Nullable;
@@ -24,61 +26,101 @@ import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class JsonEditorFormExtensionTest {
+
+    private static final UUID PREDEFINED_UUID = UUID.fromString("d2f53f62-c8d7-4273-ae9a-79fcbfaedc47");
 
     @Test
     @SneakyThrows
     @SuppressWarnings({"unchecked", "rawtypes"})
     void renderEditorTest() {
-
-        UUID predefinedUUID = UUID.fromString("d2f53f62-c8d7-4273-ae9a-79fcbfaedc47");
-
         try (MockedStatic<ExtensionInfo> extensionInfoMockedStatic = mockStatic(ExtensionInfo.class);
              MockedStatic<UUID> uuidMockedStatic = mockStatic(UUID.class)) {
             ExtensionInfo info = mock(ExtensionInfo.class);
             extensionInfoMockedStatic.when(ExtensionInfo::getInstance).thenReturn(info);
             lenient().when(info.getVersion()).thenReturn(Version.builder().bundleBuildTimestamp("2023-11-14 07:29").build());
+            uuidMockedStatic.when(UUID::randomUUID).thenReturn(PREDEFINED_UUID);
+
             SharedContext context = mock(SharedContext.class);
-
-            uuidMockedStatic.when(UUID::randomUUID).thenReturn(predefinedUUID);
-
-            IWorkItem workItem = mock(IWorkItem.class);
-
             HtmlBuilderTargetSelector htmlBuilderTargetSelector = mock(HtmlBuilderTargetSelector.class);
             when(context.createHtmlFragmentBuilderFor()).thenReturn(htmlBuilderTargetSelector);
 
-            when(htmlBuilderTargetSelector.gwt()).thenReturn(createHtmlBuilder());
-            when(workItem.isPersisted()).thenReturn(false);
-
-            renderAndCompareWithResource(context, workItem, "editor-not-created.html");
-
-            when(htmlBuilderTargetSelector.gwt()).thenReturn(createHtmlBuilder());
-            when(workItem.isPersisted()).thenReturn(true);
-            IPObjectList attachments = mock(IPObjectList.class);
-            when(workItem.getAttachments()).thenReturn(attachments);
+            // shared attachment used to render a single select option
             IAttachmentBase attachment = mock(IAttachmentBase.class);
             when(attachment.getId()).thenReturn("testAttachmentId");
             when(attachment.getFileName()).thenReturn("testAttachment.json");
-            when(attachments.stream()).thenReturn(Stream.of(attachment));
 
-            renderAndCompareWithResource(context, workItem, "editor-ok.html");
-
+            // 1. not persisted yet -> placeholder message
+            IWorkItem workItem = mock(IWorkItem.class);
             when(htmlBuilderTargetSelector.gwt()).thenReturn(createHtmlBuilder());
-            when(attachments.stream()).thenThrow(new IllegalStateException("emulated exception for testing purposes"));
+            when(workItem.isPersisted()).thenReturn(false);
+            renderAndCompareWithResource(context, workItem, false, "editor-not-created.html");
 
-            renderAndCompareWithResource(context, workItem, "editor-exception.html");
+            // 2. persisted work item -> full editor, validateOnSave = false, no space, prefix = id + '-'
+            when(htmlBuilderTargetSelector.gwt()).thenReturn(createHtmlBuilder());
+            when(workItem.isPersisted()).thenReturn(true);
+            when(workItem.getProjectId()).thenReturn("TEST_PROJECT");
+            when(workItem.getId()).thenReturn("TEST_WI");
+            IPObjectList workItemAttachments = mock(IPObjectList.class);
+            when(workItem.getAttachments()).thenReturn(workItemAttachments);
+            when(workItemAttachments.stream()).thenReturn(Stream.of(attachment));
+            renderAndCompareWithResource(context, workItem, false, "editor-ok.html");
+
+            // 3. persisted module -> full editor, validateOnSave = true, with space, empty prefix
+            IModule module = mock(IModule.class, RETURNS_DEEP_STUBS);
+            when(htmlBuilderTargetSelector.gwt()).thenReturn(createHtmlBuilder());
+            when(module.isPersisted()).thenReturn(true);
+            when(module.getProjectId()).thenReturn("MODULE_PROJECT");
+            when(module.getModuleName()).thenReturn("My Doc 1");
+            when(module.getLocalId().getContainerId().getObjectName()).thenReturn("MySpace");
+            IPObjectList moduleAttachments = mock(IPObjectList.class);
+            when(module.getAttachments()).thenReturn(moduleAttachments);
+            when(moduleAttachments.stream()).thenReturn(Stream.of(attachment));
+            renderAndCompareWithResource(context, module, true, "editor-ok-module.html");
+
+            // 3b. special characters in module/space names must be HTML-escaped in the rendered attributes
+            IModule unsafeModule = mock(IModule.class, RETURNS_DEEP_STUBS);
+            when(htmlBuilderTargetSelector.gwt()).thenReturn(createHtmlBuilder());
+            when(unsafeModule.isPersisted()).thenReturn(true);
+            when(unsafeModule.getProjectId()).thenReturn("proj");
+            when(unsafeModule.getModuleName()).thenReturn("a'b<i>");
+            when(unsafeModule.getLocalId().getContainerId().getObjectName()).thenReturn("sp'ace");
+            IPObjectList unsafeAttachments = mock(IPObjectList.class);
+            when(unsafeModule.getAttachments()).thenReturn(unsafeAttachments);
+            when(unsafeAttachments.stream()).thenReturn(Stream.empty());
+            String unsafeRendered = new JsonEditorFormExtension().renderEditor(context, unsafeModule, false);
+            assertThat(unsafeRendered).contains("data-entity-id='a&#39;b&lt;i&gt;'");
+            assertThat(unsafeRendered).contains("data-space-id='sp&#39;ace'");
+            assertThat(unsafeRendered).doesNotContain("a'b<i>");
+
+            // 4. exception while building the editor -> error message
+            when(htmlBuilderTargetSelector.gwt()).thenReturn(createHtmlBuilder());
+            when(workItemAttachments.stream()).thenThrow(new IllegalStateException("emulated exception for testing purposes"));
+            renderAndCompareWithResource(context, workItem, false, "editor-exception.html");
+
+            // 5. object that is neither a module nor a work item -> nothing is rendered
+            when(htmlBuilderTargetSelector.gwt()).thenReturn(createHtmlBuilder());
+            String unsupportedRendered = new JsonEditorFormExtension().renderEditor(context, mock(IPObject.class), false);
+            assertThat(unsupportedRendered).isBlank();
         }
     }
 
     @SneakyThrows
     @SuppressWarnings("ConstantConditions")
-    private void renderAndCompareWithResource(SharedContext context, IWorkItem workItem, String resourceFileName) {
-        try (InputStream resultOk = this.getClass().getResourceAsStream("/" + resourceFileName)) {
-            assertEquals(new String(resultOk.readAllBytes(), StandardCharsets.UTF_8), new JsonEditorFormExtension().renderEditor(context, workItem, false));
+    private void renderAndCompareWithResource(SharedContext context, IPObject object, boolean validateOnSave, String resourceFileName) {
+        try (InputStream expected = this.getClass().getResourceAsStream("/" + resourceFileName)) {
+            // stripTrailing() tolerates the final newline that the end-of-file-fixer pre-commit hook enforces on resources
+            assertEquals(new String(expected.readAllBytes(), StandardCharsets.UTF_8).stripTrailing(),
+                    new JsonEditorFormExtension().renderEditor(context, object, validateOnSave).stripTrailing());
         }
     }
 
