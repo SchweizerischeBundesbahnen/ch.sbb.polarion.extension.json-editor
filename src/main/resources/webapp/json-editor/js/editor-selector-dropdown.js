@@ -1,4 +1,4 @@
-import SearchableDropdown from "/polarion/json-editor/ui/generic/js/modules/SearchableDropdown.js";
+import SearchableDropdown from "../generic/js/modules/SearchableDropdown.js";
 
 // Upgrade the native "File" selector to the shared Polarion 2606 searchable dropdown.
 // Element-mode mirrors the selection back to the underlying <select> and forwards `change`,
