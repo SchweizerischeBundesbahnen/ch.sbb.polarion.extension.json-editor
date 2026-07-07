@@ -256,8 +256,9 @@
         document.getElementById('cancel-edit-json-button').addEventListener('click', handleCancelEditJson);
 
         // No initial file is loaded on purpose: the combobox opens with nothing selected (allowEmpty),
-        // the new-file-name input is shown and the editor stays empty. Picking a file in the combobox
-        // fires 'change' -> handleEditorChange, which loads its content and hides the new-name input.
+        // the new-file-name input stays hidden (defaulted via the .new-file-name CSS rule) and the
+        // editor stays empty. Picking New reveals the input; picking a file fires 'change' ->
+        // handleEditorChange, which loads its content.
     }
 
     processImages();
