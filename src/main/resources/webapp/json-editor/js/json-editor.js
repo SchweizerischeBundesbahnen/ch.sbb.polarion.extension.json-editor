@@ -255,6 +255,14 @@
         document.getElementById('save-json-button').addEventListener('click', saveJson);
         document.getElementById('cancel-edit-json-button').addEventListener('click', handleCancelEditJson);
 
+        // Reflect the current selection's new-file-name visibility on first render, independent of the
+        // editor module's load timing: a pre-selected file must hide the "new file name" input right
+        // away, otherwise the empty field is shown until the first change event fires.
+        const initialVisibility = document.getElementById('editor-selector').value ? 'hidden' : 'visible';
+        for (const element of document.getElementsByClassName('new-file-name')) {
+            element.style.visibility = initialVisibility;
+        }
+
         // The editor module (hljs-editor.js) dispatches an initial 'change' on the selector once it is ready,
         // which sets the initial visibility and loads the pre-selected file. That module and this script load
         // independently, so the dispatch may fire before the listener above is attached. If the editor is
