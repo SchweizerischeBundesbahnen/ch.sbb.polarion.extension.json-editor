@@ -255,13 +255,10 @@
         document.getElementById('save-json-button').addEventListener('click', saveJson);
         document.getElementById('cancel-edit-json-button').addEventListener('click', handleCancelEditJson);
 
-        // The editor module (hljs-editor.js) dispatches an initial 'change' on the selector once it is ready,
-        // which sets the initial visibility and loads the pre-selected file. That module and this script load
-        // independently, so the dispatch may fire before the listener above is attached. If the editor is
-        // already present, that initial event was missed - trigger the initial state now.
-        if (globalThis.jsonCodeEditor) {
-            handleEditorChange(document.getElementById('editor-selector'));
-        }
+        // No initial file is loaded on purpose: the combobox opens with nothing selected (allowEmpty),
+        // the new-file-name input stays hidden (defaulted via the .new-file-name CSS rule) and the
+        // editor stays empty. Picking New reveals the input; picking a file fires 'change' ->
+        // handleEditorChange, which loads its content.
     }
 
     processImages();

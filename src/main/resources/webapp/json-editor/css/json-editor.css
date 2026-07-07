@@ -1,3 +1,14 @@
+.selector-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+/* Hidden until the user picks "New" in the combobox: with nothing selected (or an existing file
+   chosen) the new-file-name field must not be shown. handleEditorChange toggles this per selection. */
+.new-file-name {
+    visibility: hidden;
+}
+
 .selector-wrapper label {
     margin-right: 5px;
     color: #595959;
@@ -18,20 +29,15 @@
 }
 
 #new-file-input {
-    padding: 4px;
-    font-family: "Segoe UI", "Selawik", "Open Sans", Arial, sans-serif;
-    font-size: 13px;
+    /* Width only — border, 23px height, typography and the blue focus ring come from the shared
+       generic input styling (inputs.css), which applies because .selector-wrapper carries the
+       form-wrapper class. */
+    width: 150px;
 }
 
-#editor-selector:hover:not([disabled]), #new-file-input:hover:not([disabled]) {
-    box-shadow: 0 3px 6px 0 rgb(0 0 0 / 30%);
-    border: 1px solid #969696;
-}
-
-#editor-selector:focus, #new-file-input:focus {
-    outline: none;
-    border: 1px solid #3296B9;
-    box-shadow: 0 3px 6px 0 rgb(0 0 0 / 30%);
+/* Widen the File combobox (the generic SearchableDropdown container that wraps #editor-selector). */
+.selector-wrapper .searchable-dropdown {
+    width: 260px;
 }
 
 .editor-buttons {
@@ -92,8 +98,8 @@
 }
 
 #new-file-name-prefix {
-    margin-left: 5px;
-    margin-right: -2px;
+    margin-left: 10px;
+    margin-right: 3px;
 }
 
 .validation-result {
@@ -101,5 +107,5 @@
 }
 
 .ml-2 {
-    margin-left: -2px;
+    margin-left: 3px;
 }
