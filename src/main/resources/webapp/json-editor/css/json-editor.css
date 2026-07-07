@@ -3,6 +3,12 @@
     align-items: center;
 }
 
+/* Hidden until the user picks "New" in the combobox: with nothing selected (or an existing file
+   chosen) the new-file-name field must not be shown. handleEditorChange toggles this per selection. */
+.new-file-name {
+    visibility: hidden;
+}
+
 .selector-wrapper label {
     margin-right: 5px;
     color: #595959;

@@ -8,7 +8,10 @@ import SearchableDropdown from "../generic/js/modules/SearchableDropdown.js";
 function upgradeEditorSelector() {
     const select = document.getElementById("editor-selector");
     if (select && !select._searchableDropdown) {
-        new SearchableDropdown({element: select, rememberSelection: false});
+        // allowEmpty so the combobox does not auto-select the first file: the Java form renders the
+        // <option>s without a `selected` attribute, so "nothing selected" is the intended default —
+        // the user picks a file (or New) to start editing.
+        new SearchableDropdown({element: select, rememberSelection: false, allowEmpty: true});
     }
 }
 

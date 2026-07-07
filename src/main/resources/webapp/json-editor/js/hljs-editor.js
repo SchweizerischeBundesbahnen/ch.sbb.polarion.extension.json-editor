@@ -14,16 +14,12 @@ const codeEditor = new CodeEditor(element, {
 
 codeEditor.setHighlighter(code => hljs.highlight(code, {language: 'json', ignoreIllegals: true}).value);
 
-const editorSelector = document.getElementById("editor-selector");
-if (editorSelector?.value) {
-    codeEditor.setValue(editorSelector.getElementsByTagName("option")[0].value);
-} else {
-    codeEditor.setValue("");
-}
+// Start empty — the real file content is loaded by json-editor.js (getFileContent) once a file is
+// chosen. Never seed the editor with the option value (that showed the file name as if it were
+// content when a file was auto-selected).
+codeEditor.setValue("");
 codeEditor.setAutoCompleteHandler(new JsonAutoComplete());
 codeEditor.create();
 
 // make it global
 globalThis.jsonCodeEditor = codeEditor;
-
-document.getElementById("editor-selector").dispatchEvent(new Event("change"));
