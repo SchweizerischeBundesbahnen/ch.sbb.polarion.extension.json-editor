@@ -128,7 +128,7 @@ public class JsonEditorFormExtension implements IFormExtension {
     private void addScripts(HtmlFragmentBuilder builder) {
         String scriptType = "text/javascript";
         addScriptSource(builder, "module", "/polarion/json-editor/ui/js/hljs-editor.js?bundle=" + UUID.randomUUID());
-        addScriptSource(builder, "module", "/polarion/json-editor/ui/js/editor-selector-dropdown.js?bundle=" + BUNDLE_TIMESTAMP);
+        addScriptSource(builder, "module", "/polarion/json-editor/ui/js/editor-selector-dropdown.js?bundle=" + UUID.randomUUID());
         addScriptSource(builder, scriptType, "/polarion/json-editor/ui/js/json-editor.js?bundle=" + BUNDLE_TIMESTAMP);
         addScriptSource(builder, scriptType, "/polarion/json-editor/ui/js/validation/json2.js?bundle=" + BUNDLE_TIMESTAMP);
         addScriptSource(builder, scriptType, "/polarion/json-editor/ui/js/validation/json-lint.js?bundle=" + BUNDLE_TIMESTAMP);
