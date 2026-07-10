@@ -45,8 +45,10 @@
     margin-top: 10px;
 }
 
-/* Button chrome (transparent action button) comes from the shared system (generic buttons.css
-   aliases `.editor-buttons button`). Only the layout / divider / icon / disabled bits stay local. */
+/* Button chrome (transparent action button) and the disabled state come from the shared system
+   (generic buttons.css aliases `.editor-buttons button` and `.editor-buttons button:disabled`, the
+   latter fading the whole button — icon span included — via opacity). Only the layout / divider /
+   icon-spacing bits stay local. */
 .editor-buttons button:not(:first-child) {
     margin-left: 5px;
 }
