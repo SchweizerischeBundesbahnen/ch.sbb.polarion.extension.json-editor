@@ -7,7 +7,7 @@
                   parentNodeName="JSON Editor"
                   parentNodeIconUrl="/polarion/json-editor-admin/ui/images/menu/30x30/_parent.svg"
                   iconUrl="/polarion/json-editor-admin/ui/images/menu/16x16/about.svg"
-                  pageUrl="/polarion/json-editor-admin/pages/about.jsp"
+                  pageUrl="/polarion/json-editor-app/ui/app/index.html?feature=about&amp;embedded=true&amp;scope=$scope$"
                   projectScope="true"
                   projectGroupScope="false"
                   repositoryScope="true"/>
