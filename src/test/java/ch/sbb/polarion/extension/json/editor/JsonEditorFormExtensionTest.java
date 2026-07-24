@@ -116,6 +116,42 @@ class JsonEditorFormExtensionTest {
             assertThat(unsafeRendered).contains("data-attachments=\"[]\"");
             assertThat(unsafeRendered).doesNotContain("a'b<i>");
 
+            // 3c. an attachment id/name with JSON-special characters must be JSON-escaped inside
+            // data-attachments (then the whole attribute is HTML-escaped, so a quote becomes \&quot;)
+            IWorkItem escWorkItem = mock(IWorkItem.class);
+            when(htmlBuilderTargetSelector.gwt()).thenReturn(createHtmlBuilder());
+            when(escWorkItem.isPersisted()).thenReturn(true);
+            when(escWorkItem.getProjectId()).thenReturn("proj");
+            when(escWorkItem.getId()).thenReturn("WI");
+            IAttachmentBase specialAttachment = mock(IAttachmentBase.class);
+            when(specialAttachment.getId()).thenReturn("att1");
+            // quote, backslash, newline, CR, tab and another control char, built via (char) casts
+            // so the source stays pure ASCII; each must be JSON-escaped by jsonEscape.
+            String specialName = "q" + (char) 34 + "bs" + (char) 92 + "nl" + (char) 10 + "cr"
+                    + (char) 13 + "tab" + (char) 9 + "ctrl" + (char) 1 + ".json";
+            when(specialAttachment.getFileName()).thenReturn(specialName);
+            // a second .json attachment forces the comma separator between array entries, and a third
+            // one reusing att1's id exercises the toMap merge function (duplicate key -> keep the first)
+            IAttachmentBase secondAttachment = mock(IAttachmentBase.class);
+            when(secondAttachment.getId()).thenReturn("att2");
+            when(secondAttachment.getFileName()).thenReturn("second.json");
+            IAttachmentBase duplicateAttachment = mock(IAttachmentBase.class);
+            when(duplicateAttachment.getId()).thenReturn("att1");
+            when(duplicateAttachment.getFileName()).thenReturn("dropped.json");
+            IPObjectList escAttachments = mock(IPObjectList.class);
+            when(escWorkItem.getAttachments()).thenReturn(escAttachments);
+            when(escAttachments.stream()).thenReturn(Stream.of(specialAttachment, secondAttachment, duplicateAttachment));
+            String escRendered = new JsonEditorFormExtension().renderEditor(context, escWorkItem, false);
+            assertThat(escRendered)
+                    .contains("q\\&quot;bs") // '"'  -> \" then HTML-escaped to \&quot;
+                    .contains("bs\\\\nl") // '\'  -> \\
+                    .contains("nl\\ncr") // newline -> \n
+                    .contains("cr\\rtab") // carriage return -> \r
+                    .contains("tab\\tctrl") // tab -> \t
+                    .contains("ctrl\\u0001.json") // other control char -> \\u0001
+                    .contains("second.json") // second entry is present (comma-separated)
+                    .doesNotContain("dropped.json"); // duplicate id kept the first value
+
             // 4. exception while building the editor -> error message
             when(htmlBuilderTargetSelector.gwt()).thenReturn(createHtmlBuilder());
             when(workItemAttachments.stream()).thenThrow(new IllegalStateException("emulated exception for testing purposes"));
