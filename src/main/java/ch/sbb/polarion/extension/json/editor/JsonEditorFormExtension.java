@@ -6,7 +6,6 @@ import com.polarion.alm.projects.model.IUniqueObject;
 import com.polarion.alm.shared.api.SharedContext;
 import com.polarion.alm.shared.api.transaction.TransactionalExecutor;
 import com.polarion.alm.shared.api.utils.html.HtmlFragmentBuilder;
-import com.polarion.alm.shared.api.utils.links.HtmlLinkFactory;
 import com.polarion.alm.tracker.model.IAttachmentBase;
 import com.polarion.alm.tracker.model.IModule;
 import com.polarion.alm.tracker.model.IWithAttachments;
@@ -22,10 +21,8 @@ import org.springframework.web.util.HtmlUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @SuppressWarnings({"java:S1192"})
 public class JsonEditorFormExtension implements IFormExtension {
@@ -64,15 +61,17 @@ public class JsonEditorFormExtension implements IFormExtension {
             IWorkItem workItem = object instanceof IWorkItem workItemObject ? workItemObject : null;
             if (module != null || workItem != null) {
                 if (object.isPersisted()) {
+                    // The React panel bundle (json-editor-app) is imported by the fragment and mounts into a
+                    // shadow root on the host div; the context + existing JSON attachments are passed on the
+                    // host's data-* attributes. See webapp/json-editor/html/json-editor-panel.html.
                     Map<String, String> values = Map.of(
                             "bundle", BUNDLE_TIMESTAMP,
                             "projectId", escapeHtml(((IUniqueObject) object).getProjectId()),
                             "entityId", escapeHtml(module != null ? module.getModuleName() : workItem.getId()),
                             "spaceId", escapeHtml(module != null ? getSpace(module) : ""),
                             "validateOnSave", String.valueOf(validateOnSave),
-                            "options", createSelectOptions((IWithAttachments) object));
-                    builder.html(fillTemplate(ScopeUtils.getFileContent("webapp/json-editor/html/json-editor.html"), values));
-                    addScripts(builder);
+                            "attachments", escapeHtml(createAttachmentsJson((IWithAttachments) object)));
+                    builder.html(fillTemplate(ScopeUtils.getFileContent("webapp/json-editor/html/json-editor-panel.html"), values));
                 } else {
                     builder.tag().div().append().text("JSON editor will be available after first save.");
                 }
@@ -106,13 +105,47 @@ public class JsonEditorFormExtension implements IFormExtension {
         return result.toString();
     }
 
+    /**
+     * Builds a JSON array of the object's `.json` attachments ({@code [{"id":"..","fileName":".."}]}) for
+     * the React panel to read from the fragment's {@code data-attachments} attribute. The caller
+     * HTML-escapes the returned string for the attribute; here we only JSON-escape the id / file name.
+     */
     @SuppressWarnings("rawtypes")
-    private String createSelectOptions(IWithAttachments workItem) {
-        IPObjectList<?> attachments = workItem.getAttachments();
+    private String createAttachmentsJson(IWithAttachments object) {
+        IPObjectList<?> attachments = object.getAttachments();
         Map<String, String> map = getJsonAttachmentNames(attachments);
-        StringBuilder builder = new StringBuilder();
+        StringBuilder builder = new StringBuilder("[");
+        boolean first = true;
         for (Map.Entry<String, String> entry : map.entrySet()) {
-            builder.append("<option value='%1$s'>%2$s</option>".formatted(escapeHtml(entry.getKey()), escapeHtml(entry.getValue())));
+            if (!first) {
+                builder.append(',');
+            }
+            first = false;
+            builder.append("{\"id\":\"").append(jsonEscape(entry.getKey()))
+                    .append("\",\"fileName\":\"").append(jsonEscape(entry.getValue())).append("\"}");
+        }
+        builder.append(']');
+        return builder.toString();
+    }
+
+    private String jsonEscape(@NotNull String value) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < value.length(); i++) {
+            char c = value.charAt(i);
+            switch (c) {
+                case '\\' -> builder.append("\\\\");
+                case '"' -> builder.append("\\\"");
+                case '\n' -> builder.append("\\n");
+                case '\r' -> builder.append("\\r");
+                case '\t' -> builder.append("\\t");
+                default -> {
+                    if (c < 0x20) {
+                        builder.append(String.format("\\u%04x", (int) c));
+                    } else {
+                        builder.append(c);
+                    }
+                }
+            }
         }
         return builder.toString();
     }
@@ -122,23 +155,7 @@ public class JsonEditorFormExtension implements IFormExtension {
                 .filter(IAttachmentBase.class::isInstance)
                 .map(IAttachmentBase.class::cast)
                 .filter(x -> x.getFileName().endsWith(".json"))
-                .collect(Collectors.toMap(IAttachmentBase::getId, IAttachmentBase::getFileName));
-    }
-
-    private void addScripts(HtmlFragmentBuilder builder) {
-        String scriptType = "text/javascript";
-        addScriptSource(builder, "module", "/polarion/json-editor/ui/js/hljs-editor.js?bundle=" + UUID.randomUUID());
-        addScriptSource(builder, "module", "/polarion/json-editor/ui/js/editor-selector-dropdown.js?bundle=" + UUID.randomUUID());
-        addScriptSource(builder, scriptType, "/polarion/json-editor/ui/js/json-editor.js?bundle=" + BUNDLE_TIMESTAMP);
-        addScriptSource(builder, scriptType, "/polarion/json-editor/ui/js/validation/json2.js?bundle=" + BUNDLE_TIMESTAMP);
-        addScriptSource(builder, scriptType, "/polarion/json-editor/ui/js/validation/json-lint.js?bundle=" + BUNDLE_TIMESTAMP);
-        addScriptSource(builder, scriptType, "/polarion/json-editor/ui/generic/js/common.js?bundle=" + BUNDLE_TIMESTAMP);
-    }
-
-    private void addScriptSource(HtmlFragmentBuilder builder, String scriptType, String scriptUrl) {
-        builder.tag().script().attributes()
-                .type(scriptType)
-                .src(HtmlLinkFactory.fromEncodedRelativeUrl(scriptUrl));
+                .collect(java.util.stream.Collectors.toMap(IAttachmentBase::getId, IAttachmentBase::getFileName, (a, b) -> a, java.util.LinkedHashMap::new));
     }
 
 }

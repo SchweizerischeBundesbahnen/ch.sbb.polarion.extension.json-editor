@@ -15,4 +15,11 @@
                 contextRoot="webapp/json-editor-admin">
         </webapp>
     </extension>
+    <extension
+            point="com.polarion.portal.tomcat.webapps">
+        <webapp
+                name="polarion/json-editor-app"
+                contextRoot="webapp/json-editor-app">
+        </webapp>
+    </extension>
 </plugin>

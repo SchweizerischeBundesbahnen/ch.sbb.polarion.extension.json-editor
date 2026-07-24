@@ -23,7 +23,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.UUID;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,24 +36,20 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class JsonEditorFormExtensionTest {
 
-    private static final UUID PREDEFINED_UUID = UUID.fromString("d2f53f62-c8d7-4273-ae9a-79fcbfaedc47");
-
     @Test
     @SneakyThrows
     @SuppressWarnings({"unchecked", "rawtypes"})
     void renderEditorTest() {
-        try (MockedStatic<ExtensionInfo> extensionInfoMockedStatic = mockStatic(ExtensionInfo.class);
-             MockedStatic<UUID> uuidMockedStatic = mockStatic(UUID.class)) {
+        try (MockedStatic<ExtensionInfo> extensionInfoMockedStatic = mockStatic(ExtensionInfo.class)) {
             ExtensionInfo info = mock(ExtensionInfo.class);
             extensionInfoMockedStatic.when(ExtensionInfo::getInstance).thenReturn(info);
             lenient().when(info.getVersion()).thenReturn(Version.builder().bundleBuildTimestamp("2023-11-14 07:29").build());
-            uuidMockedStatic.when(UUID::randomUUID).thenReturn(PREDEFINED_UUID);
 
             SharedContext context = mock(SharedContext.class);
             HtmlBuilderTargetSelector htmlBuilderTargetSelector = mock(HtmlBuilderTargetSelector.class);
             when(context.createHtmlFragmentBuilderFor()).thenReturn(htmlBuilderTargetSelector);
 
-            // shared attachment used to render a single select option
+            // shared attachment used to populate the embedded data-attachments JSON
             IAttachmentBase attachment = mock(IAttachmentBase.class);
             when(attachment.getId()).thenReturn("testAttachmentId");
             when(attachment.getFileName()).thenReturn("testAttachment.json");
@@ -65,7 +60,7 @@ class JsonEditorFormExtensionTest {
             when(workItem.isPersisted()).thenReturn(false);
             renderAndCompareWithResource(context, workItem, false, "editor-not-created.html");
 
-            // 2. persisted work item -> full editor, validateOnSave = false, no space, prefix = id + '-'
+            // 2. persisted work item -> React-panel fragment, validateOnSave = false, no space
             when(htmlBuilderTargetSelector.gwt()).thenReturn(createHtmlBuilder());
             when(workItem.isPersisted()).thenReturn(true);
             when(workItem.getProjectId()).thenReturn("TEST_PROJECT");
@@ -73,9 +68,22 @@ class JsonEditorFormExtensionTest {
             IPObjectList workItemAttachments = mock(IPObjectList.class);
             when(workItem.getAttachments()).thenReturn(workItemAttachments);
             when(workItemAttachments.stream()).thenReturn(Stream.of(attachment));
-            renderAndCompareWithResource(context, workItem, false, "editor-ok.html");
+            String workItemRendered = new JsonEditorFormExtension().renderEditor(context, workItem, false);
+            assertThat(workItemRendered)
+                    .contains("<div id=\"json-editor-panel\"")
+                    .contains("data-project-id=\"TEST_PROJECT\"")
+                    .contains("data-entity-id=\"TEST_WI\"")
+                    .contains("data-space-id=\"\"")
+                    .contains("data-validate-on-save=\"false\"")
+                    // JSON attachments, HTML-escaped for the attribute (quotes become &quot;)
+                    .contains("data-attachments=\"[{&quot;id&quot;:&quot;testAttachmentId&quot;,&quot;fileName&quot;:&quot;testAttachment.json&quot;}]\"")
+                    // the fragment imports the React panel bundle and mounts it, with a cache-buster
+                    // on the starter.css trigger link (real panel CSS is bundled into the React app)
+                    .contains("starter.css?bundle=202311140729")
+                    .contains("import(\"/polarion/json-editor-app/ui/app/assets/jsonEditorPanel.js\")")
+                    .contains("mountJsonEditorPanel(\"#json-editor-panel\")");
 
-            // 3. persisted module -> full editor, validateOnSave = true, with space, empty prefix
+            // 3. persisted module -> React-panel fragment, validateOnSave = true, with space
             IModule module = mock(IModule.class, RETURNS_DEEP_STUBS);
             when(htmlBuilderTargetSelector.gwt()).thenReturn(createHtmlBuilder());
             when(module.isPersisted()).thenReturn(true);
@@ -85,7 +93,12 @@ class JsonEditorFormExtensionTest {
             IPObjectList moduleAttachments = mock(IPObjectList.class);
             when(module.getAttachments()).thenReturn(moduleAttachments);
             when(moduleAttachments.stream()).thenReturn(Stream.of(attachment));
-            renderAndCompareWithResource(context, module, true, "editor-ok-module.html");
+            String moduleRendered = new JsonEditorFormExtension().renderEditor(context, module, true);
+            assertThat(moduleRendered)
+                    .contains("data-project-id=\"MODULE_PROJECT\"")
+                    .contains("data-entity-id=\"My Doc 1\"")
+                    .contains("data-space-id=\"MySpace\"")
+                    .contains("data-validate-on-save=\"true\"");
 
             // 3b. special characters in module/space names must be HTML-escaped in the rendered attributes
             IModule unsafeModule = mock(IModule.class, RETURNS_DEEP_STUBS);
@@ -98,8 +111,9 @@ class JsonEditorFormExtensionTest {
             when(unsafeModule.getAttachments()).thenReturn(unsafeAttachments);
             when(unsafeAttachments.stream()).thenReturn(Stream.empty());
             String unsafeRendered = new JsonEditorFormExtension().renderEditor(context, unsafeModule, false);
-            assertThat(unsafeRendered).contains("data-entity-id='a&#39;b&lt;i&gt;'");
-            assertThat(unsafeRendered).contains("data-space-id='sp&#39;ace'");
+            assertThat(unsafeRendered).contains("data-entity-id=\"a&#39;b&lt;i&gt;\"");
+            assertThat(unsafeRendered).contains("data-space-id=\"sp&#39;ace\"");
+            assertThat(unsafeRendered).contains("data-attachments=\"[]\"");
             assertThat(unsafeRendered).doesNotContain("a'b<i>");
 
             // 4. exception while building the editor -> error message

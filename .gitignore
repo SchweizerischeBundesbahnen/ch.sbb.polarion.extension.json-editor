@@ -43,6 +43,9 @@ src/main/resources/webapp/*-admin/html/user-guide.html
 src/main/resources/webapp/*-admin/html/disclaimer.html
 README.html
 
+# Generated Vite/React bundle (copied from ui/dist by the Maven build)
+src/main/resources/webapp/json-editor-app/app/
+
 node/
 node_modules/
 

@@ -1,0 +1,21 @@
+<!-- WorkItem / Document Properties JSON editor panel. Polarion (JsonEditorFormExtension) injects this
+  fragment into the form. On load the React panel bundle is imported and mounts into a SHADOW ROOT on
+  the div below (see ui/src/formext/mount.tsx). It injects its own styles into that shadow root -
+  react-sbb-polarion's bundled stylesheet plus the panel CSS (petrel.css / highlightjs.css /
+  json-editor.css) - so the panel's CSS is fully encapsulated and cannot clash with other extensions'
+  panels on the shared form. The panel's real styles (petrel / highlight.js / json-editor) are bundled
+  into the React app and injected into the shadow root; the <link> below loads a tiny empty stylesheet
+  (starter.css) that exists only to fire the bundle-import trigger via its onload handler - an inline
+  module script would not run inside a GWT-injected fragment. The panel context and the existing JSON
+  attachments are passed on the host div's data-* attributes (read by mountJsonEditorPanel). -->
+<link rel='stylesheet' href='/polarion/json-editor/ui/css/starter.css?bundle=${bundle}'
+      onload='import("/polarion/json-editor-app/ui/app/assets/jsonEditorPanel.js")
+                .then(module => module.mountJsonEditorPanel("#json-editor-panel"))
+                .catch(console.error);'>
+
+<div id="json-editor-panel"
+     data-project-id="${projectId}"
+     data-entity-id="${entityId}"
+     data-space-id="${spaceId}"
+     data-validate-on-save="${validateOnSave}"
+     data-attachments="${attachments}"></div>
