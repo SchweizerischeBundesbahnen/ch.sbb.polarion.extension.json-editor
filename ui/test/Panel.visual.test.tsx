@@ -60,7 +60,7 @@ async function pickNewAndType(name: string) {
   await vi.waitFor(() => expect(($('#new-file-input') as HTMLInputElement).value).toBe(name));
 }
 
-describe('JsonEditorPanel visual', () => {
+describe.skipIf(!__PIXEL_REFERENCES__)('JsonEditorPanel visual', () => {
   it('initial empty state (file selector + disabled action bar + empty editor)', async () => {
     installFetchMock([]);
     renderPanel();

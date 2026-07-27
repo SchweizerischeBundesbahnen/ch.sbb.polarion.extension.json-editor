@@ -11,7 +11,15 @@ import { defineConfig } from 'vitest/config';
 // Per-component subfolder derived from the test file name (e.g. "Panel.visual.test.tsx" -> "Panel").
 const componentDir = (testFileName: string): string => testFileName.split(/[\\/]/).pop()!.split('.')[0];
 
+// The committed reference screenshots are pixel-locked to the pinned Playwright image, so the visual
+// assertions are meaningful only there. scripts/docker-test.mjs sets PIXEL_REFERENCES=1 inside the
+// container; everywhere else (a developer's macOS/Windows box, a plain CI runner) the visual suites
+// skip themselves rather than failing on the host's font metrics - which shift both the antialiasing
+// and the rendered element height, i.e. a red run that says nothing about the code.
+const pixelReferences = process.env.PIXEL_REFERENCES === '1';
+
 export default defineConfig({
+  define: { __PIXEL_REFERENCES__: JSON.stringify(pixelReferences) },
   plugins: [react()],
   // Resolve React to this app's single instance, mirroring vite.config.js. Redundant while RSP is
   // consumed as a published tarball (React is a peer dependency there), but required the moment the
