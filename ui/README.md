@@ -52,3 +52,20 @@ npm run format:check
 
 `src/vendor/` holds the vendored petrel code editor + highlight.js + jsonlint, kept verbatim from the
 legacy webapp; it is excluded from lint, formatting and coverage.
+
+### Running the tests
+
+**One command, locally and in CI: `npm run test:coverage:docker`.** It runs the full suite (behavior +
+visual regression) plus the 80% istanbul coverage gate inside the pinned Playwright Docker image, which
+is what the Maven `test` phase and the pre-commit hook execute. Docker must be running.
+
+```bash
+npm run test:coverage:docker   # the canonical run: full suite + coverage gate, in the pinned image
+npm run test:coverage          # fast local loop: behavior only + the gate, no Docker, no pixels
+npm run test:update:docker     # regenerate the committed reference PNGs after an intentional UI change
+```
+
+> Do **not** run `npm run test:coverage:full` directly outside a container. It is the inner command the
+> Docker wrapper invokes; on macOS/Windows its visual tests always fail - the references are pixel-locked
+> to the pinned image, and different font metrics change both antialiasing and the rendered element
+> height. A red run there means "wrong environment", not "broken code".
