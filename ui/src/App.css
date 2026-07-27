@@ -4,8 +4,6 @@
   --je-border: var(--sbb-color-border, #d5d5d5);
   --je-bg-hover: var(--sbb-color-bg-hover, #f2f6fa);
   /* Polarion admin-page look (from the generic common.css / about.css). */
-  --je-heading: #000028;
-  --je-heading-bar: #f3f3f0;
   --je-code-border: #dfe1e6;
   --je-code-bg: #f4f5f7;
 }
