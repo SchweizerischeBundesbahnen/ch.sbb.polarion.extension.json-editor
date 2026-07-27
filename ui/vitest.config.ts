@@ -11,8 +11,21 @@ import { defineConfig } from 'vitest/config';
 // Per-component subfolder derived from the test file name (e.g. "Panel.visual.test.tsx" -> "Panel").
 const componentDir = (testFileName: string): string => testFileName.split(/[\\/]/).pop()!.split('.')[0];
 
+// The committed reference screenshots are pixel-locked to the pinned Playwright image, so the visual
+// assertions are meaningful only there. scripts/docker-test.mjs sets PIXEL_REFERENCES=1 inside the
+// container; everywhere else (a developer's macOS/Windows box, a plain CI runner) the visual suites
+// skip themselves rather than failing on the host's font metrics - which shift both the antialiasing
+// and the rendered element height, i.e. a red run that says nothing about the code.
+const pixelReferences = process.env.PIXEL_REFERENCES === '1';
+
 export default defineConfig({
+  define: { __PIXEL_REFERENCES__: JSON.stringify(pixelReferences) },
   plugins: [react()],
+  // Resolve React to this app's single instance, mirroring vite.config.js. Redundant while RSP is
+  // consumed as a published tarball (React is a peer dependency there), but required the moment the
+  // dependency is temporarily pointed at a local RSP checkout to iterate - otherwise the app and the
+  // linked library get two Reacts and every hook throws "invalid hook call".
+  resolve: { dedupe: ['react', 'react-dom'] },
   // Pre-bundle these so Vite does not discover a new dependency mid-run and reload the browser page
   // (which intermittently fails a test file with "Vitest failed to find the runner"). Matters most on
   // a fresh `npm ci` in Docker where there is no warm dep-optimize cache.
@@ -59,12 +72,21 @@ export default defineConfig({
       reportsDirectory: './coverage',
       all: false,
       include: ['src/**'],
-      // Excluded: the app bootstrap (main.tsx), the dev-only harness page (PanelDev - local `vite dev`
-      // scaffolding never opened in Polarion, whose only real logic is the shared EntityPicker, covered
-      // directly), and src/vendor/** (the vendored petrel code editor + highlight.js + jsonlint, kept
-      // verbatim from the legacy webapp - third-party, not restyled or unit-tested here; see
-      // reference/react-sbb-polarion vendored-code policy).
-      exclude: ['src/**/*.d.ts', 'src/**/*.css', 'src/main.tsx', 'src/pages/PanelDev.tsx', 'src/vendor/**'],
+      // Excluded: the app bootstrap (main.tsx), the dev-only pages (Landing - the `vite dev` index,
+      // whose selection logic the router test covers - and PanelDev, local scaffolding never opened in
+      // Polarion whose only real logic is the shared EntityPicker, covered directly), and src/vendor/**
+      // (the vendored petrel code editor + highlight.js + jsonlint, kept verbatim from the legacy
+      // webapp - third-party, not restyled or unit-tested here; see the vendored-code policy).
+      // `types.ts` is deliberately NOT excluded: interfaces erase at transpile, so listing it hides
+      // nothing and blurs this list.
+      exclude: [
+        'src/**/*.d.ts',
+        'src/**/*.css',
+        'src/main.tsx',
+        'src/pages/Landing.tsx',
+        'src/pages/PanelDev.tsx',
+        'src/vendor/**',
+      ],
       // Uniform 80% gate on all four metrics.
       thresholds: {
         statements: 80,

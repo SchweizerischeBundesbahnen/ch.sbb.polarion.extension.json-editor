@@ -240,6 +240,22 @@ describe('JsonEditorPanel', () => {
     expect(($('#cancel-edit-json-button') as HTMLButtonElement).disabled).toBe(true);
   });
 
+  it('stays in edit mode when the cancel confirm is declined', async () => {
+    installFetchMock([{ method: 'GET', match: /\/attachments\/att1\/content$/, respond: () => new Response('{}') }]);
+    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
+    await renderPanel();
+    setControlValue(selectEl(), 'att1', 'change');
+    await vi.waitFor(() => expect(($('#edit-json-button') as HTMLButtonElement).disabled).toBe(false));
+    ($('#edit-json-button') as HTMLButtonElement).click();
+    await vi.waitFor(() => expect(($('#cancel-edit-json-button') as HTMLButtonElement).disabled).toBe(false));
+
+    ($('#cancel-edit-json-button') as HTMLButtonElement).click();
+    // Declining the confirm must leave the edit untouched, not silently discard it.
+    expect(confirmSpy).toHaveBeenCalled();
+    expect(($('#cancel-edit-json-button') as HTMLButtonElement).disabled).toBe(false);
+    expect(selectEl().disabled).toBe(true);
+  });
+
   it('cancels a new-file edit without a confirm prompt', async () => {
     installFetchMock([]);
     await renderPanel();

@@ -1,27 +1,18 @@
 :root {
-  --je-fg: var(--sbb-color-text, #1a1a1a);
   --je-muted: var(--sbb-color-text-muted, #6b6b6b);
   --je-accent: var(--sbb-color-accent, #0d5c9e);
   --je-border: var(--sbb-color-border, #d5d5d5);
   --je-bg-hover: var(--sbb-color-bg-hover, #f2f6fa);
   /* Polarion admin-page look (from the generic common.css / about.css). */
-  --je-heading: #000028;
-  --je-heading-bar: #f3f3f0;
   --je-code-border: #dfe1e6;
   --je-code-bg: #f4f5f7;
 }
 
-/* Body-margin reset, outer page padding and the admin `.page > h1` heading now come from RSP
-   (PageLayout.css), shared across all extensions; `.app` here supplies only this app's typography. */
-.app {
-  /* font-family comes from RSP (control-tokens.css applies --sbb-control-font-family to
-     .standard-admin-page) so every extension shares one typeface — don't override it here. */
-  color: var(--je-fg);
-  /* Match the Polarion admin base font (generic common.css `body, input, select { font-size: 13px }`).
-     We don't load common.css, so without this the page inherits the browser default (16px) and every
-     text element renders too large. Headings and table cells use explicit px sizes, unaffected. */
-  font-size: 13px;
-}
+/* App root (App.tsx: <div class="app standard-admin-page">). Nothing is declared for `.app` here on
+   purpose: react-sbb-polarion's PageLayout.css owns the whole page shell — the body-margin reset, the
+   outer padding, the font family, the 13px admin base size and the text color — so every extension
+   shares one look. `standard-admin-page` (also from RSP's bundled style.css) supplies the --sbb-*
+   control tokens and the Polarion-styled checkboxes, so no per-app checkbox rules here either. */
 
 .feature-list a {
   color: var(--je-accent);
