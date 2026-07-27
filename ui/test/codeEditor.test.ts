@@ -24,6 +24,26 @@ describe('validateJsonContent', () => {
     // jsonlint pinpoints the offending line; the wrapper converts it to a 0-based index.
     expect(typeof outcome.errorLine === 'number' || outcome.errorLine === undefined).toBe(true);
   });
+
+  it('converts the reported line to a 0-based index', () => {
+    // The error sits on the second line, which the editor marks as index 1.
+    const outcome = validateJsonContent('{\n  "a": ,\n}');
+    if (outcome.errorLine !== undefined) {
+      expect(outcome.errorLine).toBeGreaterThanOrEqual(0);
+      expect(outcome.errorLine).toBe(Number(/error on line (\d+):/.exec(outcome.message!)![1]) - 1);
+    }
+  });
+
+  it('leaves the error line undefined when the message pinpoints nothing', () => {
+    // Not every jsonlint failure carries an "error on line N" prefix; the editor must then simply
+    // report the message without marking a line.
+    const outcome = validateJsonContent('');
+    expect(outcome.valid).toBe(false);
+    expect(outcome.message).toBeTruthy();
+    if (!/error on line \d+:/.test(outcome.message!)) {
+      expect(outcome.errorLine).toBeUndefined();
+    }
+  });
 });
 
 describe('createJsonCodeEditor', () => {
