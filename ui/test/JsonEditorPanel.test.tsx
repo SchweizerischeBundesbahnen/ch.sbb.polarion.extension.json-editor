@@ -39,6 +39,16 @@ async function renderPanel(props: Partial<Parameters<typeof JsonEditorPanel>[0]>
   return { onSaved };
 }
 
+/** Answer the confirmation dialog the panel renders in place of the former window.confirm. */
+async function answerDialog(label: 'OK' | 'Cancel') {
+  await vi.waitFor(() => expect(document.querySelector('.rsp-modal')).not.toBeNull());
+  const button = Array.from(document.querySelectorAll<HTMLButtonElement>('.rsp-modal-footer .sbb-btn')).find(
+    (b) => (b.textContent ?? '').trim() === label,
+  );
+  if (!button) throw new Error(`dialog button "${label}" not found`);
+  button.click();
+}
+
 const editorTextarea = () => $('#jsonCodeEditor textarea') as HTMLTextAreaElement;
 const selectEl = () => $('#editor-selector') as HTMLSelectElement;
 
@@ -227,22 +237,20 @@ describe('JsonEditorPanel', () => {
         },
       },
     ]);
-    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
     await renderPanel();
     setControlValue(selectEl(), 'att1', 'change');
     await vi.waitFor(() => expect(getCalls).toBe(1));
     ($('#edit-json-button') as HTMLButtonElement).click();
     await vi.waitFor(() => expect(($('#cancel-edit-json-button') as HTMLButtonElement).disabled).toBe(false));
     ($('#cancel-edit-json-button') as HTMLButtonElement).click();
-    // Confirm was asked, and the original content was re-fetched (a second GET).
+    // The dialog was confirmed, and the original content was re-fetched (a second GET).
+    await answerDialog('OK');
     await vi.waitFor(() => expect(getCalls).toBe(2));
-    expect(confirmSpy).toHaveBeenCalled();
     expect(($('#cancel-edit-json-button') as HTMLButtonElement).disabled).toBe(true);
   });
 
   it('stays in edit mode when the cancel confirm is declined', async () => {
     installFetchMock([{ method: 'GET', match: /\/attachments\/att1\/content$/, respond: () => new Response('{}') }]);
-    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
     await renderPanel();
     setControlValue(selectEl(), 'att1', 'change');
     await vi.waitFor(() => expect(($('#edit-json-button') as HTMLButtonElement).disabled).toBe(false));
@@ -250,8 +258,8 @@ describe('JsonEditorPanel', () => {
     await vi.waitFor(() => expect(($('#cancel-edit-json-button') as HTMLButtonElement).disabled).toBe(false));
 
     ($('#cancel-edit-json-button') as HTMLButtonElement).click();
-    // Declining the confirm must leave the edit untouched, not silently discard it.
-    expect(confirmSpy).toHaveBeenCalled();
+    // Dismissing the dialog must leave the edit untouched, not silently discard it.
+    await answerDialog('Cancel');
     expect(($('#cancel-edit-json-button') as HTMLButtonElement).disabled).toBe(false);
     expect(selectEl().disabled).toBe(true);
   });
