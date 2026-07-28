@@ -30,7 +30,10 @@ export default defineConfig({
   build: {
     outDir: './dist/app/assets',
     emptyOutDir: false,
-    minify: 'esbuild',
+    // Vite 8 builds with rolldown and no longer ships esbuild, so naming that minifier fails with
+    // "Cannot find package 'esbuild'". `true` is the toolchain's own default minifier - which is
+    // what the main app build has always used, since it never set this at all.
+    minify: true,
     lib: {
       // React is bundled in (not externalized) so the editor can load this module standalone.
       entry: {

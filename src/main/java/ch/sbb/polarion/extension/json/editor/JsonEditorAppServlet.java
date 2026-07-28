@@ -5,10 +5,10 @@ import ch.sbb.polarion.extension.generic.GenericUiServlet;
 import java.io.Serial;
 
 /**
- * Serves the Vite/React app bundle (the third webapp context, {@code json-editor-app}). The admin
+ * Serves the Vite/React app bundle from its own webapp context ({@code json-editor-app}). The admin
  * "About" page and the WorkItem/Document JSON editor panel are both rendered by this single bundle,
- * chosen by the {@code ?feature=<id>} query parameter. Mirrors {@link JsonEditorUiServlet} /
- * {@link JsonEditorAdminUiServlet}.
+ * chosen by the {@code ?feature=<id>} query parameter. Mirrors {@link JsonEditorUiServlet}, which
+ * serves the REST context.
  */
 public class JsonEditorAppServlet extends GenericUiServlet {
 
