@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { SearchableSelect } from '@grigoriev/react-sbb-polarion';
+import { SearchableSelect, useConfirm } from '@grigoriev/react-sbb-polarion';
 import useRemote from '../services/useRemote';
 import { createJsonCodeEditor, validateJsonContent } from './codeEditor';
 import type { JsonCodeEditor } from './codeEditor';
@@ -37,6 +37,7 @@ interface ValidationState {
  */
 export default function JsonEditorPanel({ context, attachments, onSaved }: JsonEditorPanelProps) {
   const { sendRequest } = useRemote();
+  const { confirm, confirmDialog } = useConfirm();
 
   const [selectedId, setSelectedId] = useState<string>('');
   const [newFileName, setNewFileName] = useState<string>('');
@@ -173,8 +174,8 @@ export default function JsonEditorPanel({ context, attachments, onSaved }: JsonE
     }
   };
 
-  const handleCancel = () => {
-    if (existingSelected && !window.confirm('Are you sure you want to cancel editing and revert changes?')) {
+  const handleCancel = async () => {
+    if (existingSelected && !(await confirm('Are you sure you want to cancel editing and revert changes?'))) {
       return;
     }
     setEditing(false);
@@ -250,7 +251,12 @@ export default function JsonEditorPanel({ context, attachments, onSaved }: JsonE
         <button type="button" id="save-json-button" disabled={!editing || saving} onClick={handleSave}>
           <span className="sbb-icon-save" role="img" aria-label="save"></span>Save
         </button>
-        <button type="button" id="cancel-edit-json-button" disabled={!editing || saving} onClick={handleCancel}>
+        <button
+          type="button"
+          id="cancel-edit-json-button"
+          disabled={!editing || saving}
+          onClick={() => void handleCancel()}
+        >
           <span className="sbb-icon-cancel" role="img" aria-label="cancel"></span>Cancel
         </button>
       </div>
@@ -267,6 +273,7 @@ export default function JsonEditorPanel({ context, attachments, onSaved }: JsonE
       <div className="editor-wrapper">
         <div id="jsonCodeEditor" ref={editorHostRef}></div>
       </div>
+      {confirmDialog}
     </>
   );
 }
