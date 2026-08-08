@@ -1,5 +1,24 @@
 # Changelog
 
+## [5.2.0](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/compare/v5.1.1...v5.2.0) (2026-08-08)
+
+
+### Features
+
+* replace the native confirm with a dialog ([#132](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/issues/132)) ([6debd85](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/commit/6debd85f12b63b5ae3a3e9d9f7e4d1c1f03f767e))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @grigoriev/react-sbb-polarion to ^0.2.0 ([#138](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/issues/138)) ([dfa6a88](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/commit/dfa6a8805350067e30ce245b0f8c7f09c514e1ce))
+* **deps:** update dependency ch.sbb.polarion.extensions:ch.sbb.polarion.extension.generic to v15.10.0 ([#131](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/issues/131)) ([574fa2c](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/commit/574fa2ca2da1f28eb709c69afbfc62b79c814eaf))
+* **deps:** update dependency ch.sbb.polarion.extensions:ch.sbb.polarion.extension.generic to v15.10.1 ([#135](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/issues/135)) ([564c9a1](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/commit/564c9a1ffe01d5aa3c6556392be3bac6ea6eaa2e))
+* **deps:** update dependency ch.sbb.polarion.extensions:ch.sbb.polarion.extension.generic to v15.6.0 ([#109](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/issues/109)) ([b4b2393](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/commit/b4b23934afb7d407cb933978fc08ea81a6963b7e))
+* **deps:** update dependency ch.sbb.polarion.extensions:ch.sbb.polarion.extension.generic to v15.7.0 ([#120](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/issues/120)) ([e999289](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/commit/e999289fe552414fba45cc879ac0b56b2ffe937b))
+* harden the UI build (no dev token in bundles, install from the lock) ([#126](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/issues/126)) ([02e5936](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/commit/02e5936c911435a0331360be5af9da21ae77e864)), closes [#125](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/issues/125)
+* react review followups ([#124](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/issues/124)) ([e8cec34](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/commit/e8cec34ff23503a0ce4b0511ecf6281ae51d0b3c))
+* unify admin fonts via react-sbb-polarion ([#116](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/issues/116)) ([b5d5d24](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/commit/b5d5d24005c5f1731cb349e4e1e925df9da48312))
+
 ## [5.1.1](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/compare/v5.1.0...v5.1.1) (2026-07-15)
 
 
