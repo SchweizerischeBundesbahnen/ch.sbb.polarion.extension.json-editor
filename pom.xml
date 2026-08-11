@@ -60,6 +60,17 @@
             <artifactId>ch.sbb.polarion.extension.generic.app</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+
+        <!-- generic's test helpers: the JUnit extensions that give a test a Polarion context.
+             Note when building generic from source: -DskipTests still packages this test-jar,
+             -Dmaven.test.skip=true does not, and this build then fails resolving it. -->
+        <dependency>
+            <groupId>ch.sbb.polarion.extensions</groupId>
+            <artifactId>ch.sbb.polarion.extension.generic.app</artifactId>
+            <version>${project.parent.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
