@@ -2,10 +2,10 @@ import type { SendRequest } from '@grigoriev/react-sbb-polarion';
 import type { PanelContext } from './types';
 
 /**
- * Attachment REST calls for the JSON editor panel, ported from the legacy json-editor.js
- * (SbbCommon.callAsync) onto the extension's `useRemote().sendRequest`. The base path selects the
- * WorkItem or Document endpoints exactly as the legacy `entityBaseUrl` did, URL-encoding every path
- * segment so names with spaces / special characters are transmitted correctly.
+ * Attachment REST calls for the JSON editor panel, issued through the extension's
+ * `useRemote().sendRequest`. The base path selects the WorkItem or Document endpoints and
+ * URL-encodes every path segment, so names with spaces or special characters are transmitted
+ * correctly.
  */
 export function entityBasePath(ctx: PanelContext): string {
   const project = encodeURIComponent(ctx.projectId);
