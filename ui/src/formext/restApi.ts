@@ -1,4 +1,4 @@
-import type { SendRequest } from '@grigoriev/react-sbb-polarion';
+import type { SendRequest } from '@sbb-polarion/react-sbb-polarion';
 import type { PanelContext } from './types';
 
 /**
