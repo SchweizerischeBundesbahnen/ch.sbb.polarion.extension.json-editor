@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { PageLayout, SearchableSelect } from '@grigoriev/react-sbb-polarion';
+import { PageLayout, SearchableSelect } from '@sbb-polarion/react-sbb-polarion';
 import { mountJsonEditorPanel } from '../formext/mount';
 import type { PanelContext } from '../formext/types';
 import { fetchDocuments } from '../services/documents';
