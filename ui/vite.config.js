@@ -17,13 +17,6 @@ export default defineConfig(({ command, mode }) => {
       resolve,
       server: {
         proxy: {
-          // Generic UI toolkit (SearchableDropdown JS + its CSS) served by GenericUiServlet. Served
-          // unauthenticated in Polarion (see the json-editor-app web.xml), so the dev proxy can fetch
-          // it without a session.
-          '/polarion/json-editor-app/ui/generic': {
-            target: polarionUrl,
-            changeOrigin: true,
-          },
           // The extension's own webapp context: REST API (attachment CRUD) + the panel CSS the dev
           // harness loads (webapp/json-editor/css/*.css, served at /polarion/json-editor/ui/css/...).
           '/polarion/json-editor/rest': {
