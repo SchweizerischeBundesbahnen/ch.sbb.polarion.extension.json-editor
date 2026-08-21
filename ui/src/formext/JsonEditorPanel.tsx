@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { SearchableSelect, useConfirm } from '@grigoriev/react-sbb-polarion';
+import { SearchableSelect, useConfirm } from '@sbb-polarion/react-sbb-polarion';
 import useRemote from '../services/useRemote';
 import { createJsonCodeEditor, validateJsonContent } from './codeEditor';
 import type { JsonCodeEditor } from './codeEditor';

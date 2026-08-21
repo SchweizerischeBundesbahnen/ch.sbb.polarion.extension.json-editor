@@ -9,10 +9,9 @@
 //      At runtime mountInShadow injects these (bundled via `?inline`) into the shadow root; the panel
 //      tests render outside a shadow root, so they must be loaded here or the panel paints unstyled
 //      (serif, no control styling).
-// The Polarion-served stylesheets linked in index.html (presentation.css, github-markdown-light.css) are
-// NOT bundled and are not loaded here; they are baseline chrome / help-article styling. Also registers
-// jest-dom matchers.
-import '@grigoriev/react-sbb-polarion/style.css';
+// The Polarion-served stylesheet linked in index.html (presentation.css) is NOT bundled and is not loaded
+// here; it is baseline chrome. Also registers jest-dom matchers.
+import '@sbb-polarion/react-sbb-polarion/style.css';
 import '@testing-library/jest-dom/vitest';
 import '../src/App.css';
 import '../src/formext/highlightjs.css';

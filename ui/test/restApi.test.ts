@@ -1,4 +1,4 @@
-import type { SendRequest } from '@grigoriev/react-sbb-polarion';
+import type { SendRequest } from '@sbb-polarion/react-sbb-polarion';
 import { describe, expect, it, vi } from 'vitest';
 import { createAttachment, entityBasePath, getAttachmentContent, updateAttachment } from '../src/formext/restApi';
 import type { PanelContext } from '../src/formext/types';
