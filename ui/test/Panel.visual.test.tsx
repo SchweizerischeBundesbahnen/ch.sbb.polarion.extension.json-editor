@@ -4,6 +4,7 @@ import { page } from 'vitest/browser';
 import JsonEditorPanel from '../src/formext/JsonEditorPanel';
 import type { Attachment, PanelContext } from '../src/formext/types';
 import { installFetchMock } from './mockFetch';
+import { settleBeforeCapture } from './visualHelpers';
 
 // Docker-only snapshots of the JSON editor panel, rendered with the same styles as Polarion: RSP's
 // bundled CSS + the extension's own panel CSS (petrel / highlightjs / json-editor, loaded in
@@ -40,6 +41,7 @@ async function snapshot(name: string) {
     expect(icon?.complete && icon.naturalWidth > 0).toBe(true);
   });
   await page.viewport(720, Math.ceil(wrapper.scrollHeight) + 24);
+  await settleBeforeCapture();
   await expect(page.elementLocator(wrapper)).toMatchScreenshot(name);
 }
 
