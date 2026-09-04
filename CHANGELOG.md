@@ -1,5 +1,13 @@
 # Changelog
 
+## [5.2.1](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/compare/v5.2.0...v5.2.1) (2026-09-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency globals to v17.12.0 ([#184](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/issues/184)) ([781e70e](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/commit/781e70e1a80940308c78d6f4ca6f705bb30a32a0))
+* **deps:** update dependency typescript-eslint to v8.69.0 ([#181](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/issues/181)) ([751379e](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/commit/751379e74d271449fc520ce65fabbd1305b0cfd8))
+
 ## [5.2.0](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/compare/v5.1.1...v5.2.0) (2026-08-21)
 
 
