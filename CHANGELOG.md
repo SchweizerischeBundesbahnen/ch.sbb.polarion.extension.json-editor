@@ -1,5 +1,20 @@
 # Changelog
 
+## [5.2.1](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/compare/v5.2.0...v5.2.1) (2026-09-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @types/node to v24.13.4 ([#195](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/issues/195)) ([a8ad722](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/commit/a8ad7228f135f2aaa8c5a2c526eab0fe3cdd4a72))
+* **deps:** update dependency @types/react-dom to v19.2.7 ([#186](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/issues/186)) ([a5ada57](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/commit/a5ada57ecfaaf9e241342cfe68f3788d3dae62d4))
+* **deps:** update dependency eslint to v10.10.0 ([#190](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/issues/190)) ([fa98f9c](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/commit/fa98f9c6c9600b839f21c3a5c3f8627df9bfaddd))
+* **deps:** update dependency globals to v17.12.0 ([#184](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/issues/184)) ([781e70e](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/commit/781e70e1a80940308c78d6f4ca6f705bb30a32a0))
+* **deps:** update dependency playwright to v1.63.0 ([#191](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/issues/191)) ([d0922c6](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/commit/d0922c620fcf1012f607e792d382ccbcecfb9bd2))
+* **deps:** update dependency typescript-eslint to v8.69.0 ([#181](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/issues/181)) ([751379e](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/commit/751379e74d271449fc520ce65fabbd1305b0cfd8))
+* **deps:** update dependency typescript-eslint to v8.70.0 ([#192](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/issues/192)) ([5c32e89](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/commit/5c32e89a7f5724e0951ce111fc36d809d7e5d452))
+* **deps:** update dependency vitest-browser-react to v2.3.0 ([#189](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/issues/189)) ([5f1318d](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/commit/5f1318d5e9102597b573c890b70aed1c88c28dff))
+* **deps:** update react monorepo to v19.3.0 ([#196](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/issues/196)) ([20d809d](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/commit/20d809dcfccf35b775cc84ef817ebb9f6bc9d95b))
+
 ## [5.2.0](https://github.com/SchweizerischeBundesbahnen/ch.sbb.polarion.extension.json-editor/compare/v5.1.1...v5.2.0) (2026-08-21)
 
 
