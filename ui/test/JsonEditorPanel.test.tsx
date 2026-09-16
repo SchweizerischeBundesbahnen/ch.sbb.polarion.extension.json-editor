@@ -59,6 +59,16 @@ afterEach(() => {
 });
 
 describe('JsonEditorPanel', () => {
+  it('keeps the toolbar separator out of the tab order and the accessibility tree', async () => {
+    installFetchMock([]);
+    await renderPanel();
+    const divider = document.querySelector('.editor-buttons .divider')!;
+    // A decoration, not a control. A <button> here would be a nameless tab stop.
+    expect(divider.tagName).toBe('SPAN');
+    expect(divider.getAttribute('aria-hidden')).toBe('true');
+    expect(document.querySelectorAll('.editor-buttons button')).toHaveLength(4);
+  });
+
   it('renders the shell with all action buttons disabled initially', async () => {
     installFetchMock([]);
     await renderPanel();

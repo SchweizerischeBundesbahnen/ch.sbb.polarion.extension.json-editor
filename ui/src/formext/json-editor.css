@@ -53,15 +53,29 @@
    (generic buttons.css aliases `.editor-buttons button` and `.editor-buttons button:disabled`, the
    latter fading the whole button — icon span included — via opacity). Only the layout / divider /
    icon-spacing bits stay local. */
-.editor-buttons button:not(:first-child) {
+/* Every child but the first, not just the buttons: the divider between them is a <span>. */
+.editor-buttons > :not(:first-child) {
   margin-left: 5px;
 }
 
+/* The separator between the buttons. It is a <span>, not a <button>, so that a decoration is never
+   focusable and never reaches a screen reader. The shared `.editor-buttons button` alias therefore no
+   longer gives it a box, and it repeats the parts of that box it needs here. */
 .editor-buttons .divider {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 4px 0;
   width: 1px;
+  border: 1px solid var(--sbb-btn-border);
+  border-radius: var(--sbb-btn-radius);
   border-right-color: #fff;
   border-left-color: #ccc;
+  font-family: var(--sbb-control-font-family);
+  font-size: 12px;
+  font-weight: bold;
+  line-height: normal;
 }
 
 .editor-buttons button img,

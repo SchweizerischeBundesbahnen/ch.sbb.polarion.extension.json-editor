@@ -241,9 +241,11 @@ export default function JsonEditorPanel({ context, attachments, onSaved }: JsonE
         <button type="button" id="edit-json-button" disabled={!editEnabled} onClick={handleEdit}>
           <span className="sbb-icon-edit" role="img" aria-label="edit"></span>Edit
         </button>
-        <button type="button" className="divider">
+        {/* Purely decorative separator, so not a control: a <span> is never focusable and never
+            announced. Its box comes from `.editor-buttons .divider` in json-editor.css. */}
+        <span className="divider" aria-hidden="true">
           &nbsp;
-        </button>
+        </span>
         <button type="button" id="validate-json-button" disabled={!editing} onClick={runValidate}>
           <img src={validateIcon} alt="reviewed" />
           Validate
