@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { PageLayout, SearchableSelect } from '@sbb-polarion/react-sbb-polarion';
 import { mountJsonEditorPanel } from '../formext/mount';
 import type { PanelContext } from '../formext/types';
@@ -24,6 +24,8 @@ type EntityType = 'workitem' | 'document';
  * file" path is covered by the Vitest tests (which mock the content endpoint).
  */
 export default function PanelDev() {
+  const entityTypeId = useId();
+  const entityIdId = useId();
   const projectId = getProjectIdFromScope(getScope());
   const [entityType, setEntityType] = useState<EntityType>('workitem');
   const [workItems, setWorkItems] = useState<ProjectWorkItem[]>([]);
@@ -92,8 +94,9 @@ export default function PanelDev() {
       {projectId && (
         <>
           <div className="landing-scope">
-            <label>Entity type:</label>
+            <label htmlFor={entityTypeId}>Entity type:</label>
             <SearchableSelect
+              id={entityTypeId}
               value={entityType}
               onChange={(v) => setEntityType(v as EntityType)}
               options={[
@@ -104,8 +107,9 @@ export default function PanelDev() {
             />
           </div>
           <div className="landing-scope">
-            <label>{entityType === 'workitem' ? 'WorkItem:' : 'Document:'}</label>
+            <label htmlFor={entityIdId}>{entityType === 'workitem' ? 'WorkItem:' : 'Document:'}</label>
             <SearchableSelect
+              id={entityIdId}
               value={entityId}
               onChange={setEntityId}
               options={options}

@@ -1,3 +1,4 @@
+import { pageViolations } from '@sbb-polarion/react-sbb-polarion/testing';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, render } from 'vitest-browser-react';
 import JsonEditorPanel from '../src/formext/JsonEditorPanel';
@@ -286,5 +287,74 @@ describe('JsonEditorPanel', () => {
     await vi.waitFor(() => expect(($('#cancel-edit-json-button') as HTMLButtonElement).disabled).toBe(true));
     // Selector re-enabled after leaving edit mode.
     expect(selectEl().disabled).toBe(false);
+  });
+});
+
+describe('JsonEditorPanel, accessibility', () => {
+  const existingContent = (body: string) => [
+    { method: 'GET', match: /\/attachments\/att1\/content$/, respond: () => new Response(body, { status: 200 }) },
+  ];
+
+  async function editExisting() {
+    setControlValue(selectEl(), 'att1', 'change');
+    await vi.waitFor(() => expect(($('#edit-json-button') as HTMLButtonElement).disabled).toBe(false));
+    ($('#edit-json-button') as HTMLButtonElement).click();
+    await vi.waitFor(() => expect(($('#validate-json-button') as HTMLButtonElement).disabled).toBe(false));
+  }
+
+  it('has no WCAG A/AA violations initially', async () => {
+    installFetchMock([]);
+    await renderPanel();
+    expect(await pageViolations()).toEqual([]);
+  });
+
+  // axe accepts a placeholder as a name, so it would not catch a control that loses its label.
+  it('names the file selector, the new file name and the editor', async () => {
+    installFetchMock([]);
+    await renderPanel();
+    setControlValue(selectEl(), NEW_FILE, 'change');
+    await vi.waitFor(() => expect(($('#new-file-input') as HTMLInputElement).style.visibility).toBe('visible'));
+    expect($('.selector-wrapper .sd-trigger')).toHaveAccessibleName('File:');
+    expect($('#new-file-input')).toHaveAccessibleName('New file name');
+    expect(editorTextarea()).toHaveAccessibleName('JSON content');
+  });
+
+  it('has no WCAG A/AA violations with "New" picked and the name warning shown', async () => {
+    installFetchMock([]);
+    await renderPanel();
+    setControlValue(selectEl(), NEW_FILE, 'change');
+    await vi.waitFor(() => expect($('#editor-warning')!.style.display).toBe('block'));
+    expect(await pageViolations()).toEqual([]);
+  });
+
+  it('has no WCAG A/AA violations in edit mode after a failed validation', async () => {
+    installFetchMock(existingContent('{"a": 1}'));
+    await renderPanel();
+    await editExisting();
+    setControlValue(editorTextarea(), '{ bad json', 'input');
+    ($('#validate-json-button') as HTMLButtonElement).click();
+    await vi.waitFor(() => expect($('#json-validation-result')!.className).toContain('validation-fail'));
+    expect(await pageViolations()).toEqual([]);
+  });
+
+  it('has no WCAG A/AA violations with a save error shown', async () => {
+    installFetchMock([
+      ...existingContent('{"a": 1}'),
+      { method: 'PATCH', match: /\/attachments\/att1$/, respond: () => new Response('save denied', { status: 500 }) },
+    ]);
+    await renderPanel();
+    await editExisting();
+    ($('#save-json-button') as HTMLButtonElement).click();
+    await vi.waitFor(() => expect($('#error-message')!.style.display).toBe('block'));
+    expect(await pageViolations()).toEqual([]);
+  });
+
+  it('has no WCAG A/AA violations with the cancel confirmation open', async () => {
+    installFetchMock(existingContent('{"a": 1}'));
+    await renderPanel();
+    await editExisting();
+    ($('#cancel-edit-json-button') as HTMLButtonElement).click();
+    await vi.waitFor(() => expect(document.querySelector('.rsp-modal')).not.toBeNull());
+    expect(await pageViolations()).toEqual([]);
   });
 });
