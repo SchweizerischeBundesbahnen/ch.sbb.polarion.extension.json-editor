@@ -216,6 +216,7 @@ export default function JsonEditorPanel({ context, attachments, onSaved }: JsonE
           type="text"
           id="new-file-input"
           className="new-file-name"
+          aria-label="New file name"
           style={{ visibility: newFileVisibility }}
           value={newFileName}
           disabled={editing || saving}

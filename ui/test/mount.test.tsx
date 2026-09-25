@@ -1,3 +1,4 @@
+import { a11yViolations } from '@sbb-polarion/react-sbb-polarion/testing';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { mountJsonEditorPanel } from '../src/formext/mount';
 import { installFetchMock } from './mockFetch';
@@ -89,6 +90,18 @@ describe('mountJsonEditorPanel', () => {
       .map((o) => o.textContent)
       .filter(Boolean);
     expect(labels).toEqual(['New']);
+    root?.unmount();
+  });
+});
+
+describe('mountJsonEditorPanel, accessibility', () => {
+  // The panel states are checked in JsonEditorPanel.test.tsx; this one scans it inside its shadow root.
+  it('has no WCAG A/AA violations inside the shadow root', async () => {
+    installFetchMock([]);
+    host = makeHost('[{"id":"att1","fileName":"WI1-a.json"}]');
+    const root = mountJsonEditorPanel('#json-editor-panel');
+    await vi.waitFor(() => expect(host!.shadowRoot!.querySelector('#jsonCodeEditor textarea')).not.toBeNull());
+    expect(await a11yViolations(host)).toEqual([]);
     root?.unmount();
   });
 });

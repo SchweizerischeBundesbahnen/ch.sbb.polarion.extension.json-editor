@@ -40,6 +40,8 @@ export function createJsonCodeEditor(element: HTMLElement): JsonCodeEditor {
   editor.setValue('');
   editor.setAutoCompleteHandler(new JsonAutoComplete());
   editor.create();
+  // The vendored editor creates its <textarea> without a name; set it here to keep src/vendor verbatim.
+  editor.textAreaElement!.setAttribute('aria-label', 'JSON content');
   return editor as JsonCodeEditor;
 }
 

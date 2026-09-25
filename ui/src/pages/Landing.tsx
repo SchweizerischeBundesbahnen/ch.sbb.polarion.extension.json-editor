@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import { SearchableSelect } from '@sbb-polarion/react-sbb-polarion';
 import { FEATURES } from '../features';
 import { getCookie, setCookie } from '../services/cookies';
@@ -27,6 +27,7 @@ function initialScope(): string {
  * "Overview" link.
  */
 export default function Landing() {
+  const scopeId = useId();
   const [projects, setProjects] = useState<PolarionProject[]>([]);
   const [scope, setScope] = useState<string>(initialScope);
   const [error, setError] = useState<string | null>(null);
@@ -68,8 +69,8 @@ export default function Landing() {
       </p>
 
       <div className="landing-scope">
-        <label>Project scope:</label>
-        <SearchableSelect value={scope} onChange={setScope} options={scopeOptions} placeholder="" />
+        <label htmlFor={scopeId}>Project scope:</label>
+        <SearchableSelect id={scopeId} value={scope} onChange={setScope} options={scopeOptions} placeholder="" />
       </div>
       {error && <div className="alert alert-error">{error}</div>}
 
