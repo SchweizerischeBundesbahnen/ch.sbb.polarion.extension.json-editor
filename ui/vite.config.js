@@ -53,7 +53,11 @@ export default defineConfig(({ command, mode }) => {
     // into the bundle that `mvn -P local-install-into-polarion` deploys, readable by everyone the SPA is
     // served to. Forcing it undefined here keeps production on the session-authenticated /internal
     // endpoints, which is what Polarion provides anyway.
-    define: { 'import.meta.env.VITE_BEARER_TOKEN': 'undefined' },
+    define: {
+      // IMPORTANT: keep this as the raw token `'undefined'` (do NOT JSON.stringify / quote as `"undefined"`),
+      // so Vite replaces it with JS `undefined` and never bakes a token-like string into the bundle.
+      'import.meta.env.VITE_BEARER_TOKEN': 'undefined',
+    },
     base: '/polarion/json-editor-app/ui/app/',
     build: {
       outDir: './dist/app',

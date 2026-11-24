@@ -55,6 +55,9 @@ export async function settleLayout(): Promise<void> {
  * Transitions and animations are off for the whole file (see test/setup.ts), so there is nothing left
  * to outrun with a sleep here.
  *
+ * The waits repeat those of `settleLayout` on purpose. A viewport resize in between can start new font
+ * loads and needs a new frame. Some captures in other extensions also skip `settleLayout`.
+ *
  * @param park whether to move the pointer away. The suites that aim the pointer somewhere themselves
  *   pass false; the parameter is part of the shape this helper has in every extension, so it is here
  *   even where this repository has no such caller.

@@ -122,6 +122,8 @@ The `ui/` Vitest suite runs in the `test` phase alongside the Java tests. By def
 | `-DinstallPlaywrightNoDeps` | Install the Chromium browser binary only. For hosts without `apt-get`/root; the host must already provide Chromium's system libraries. |
 | `-DskipVisualJsTests` | Exclude the pixel-based visual-regression tests (`*.visual.test.tsx`), which only reproduce inside the Docker image. Only effective together with `-DjsTestsNoDocker`. |
 
+When using `-DjsTestsNoDocker` **without** `-DinstallPlaywright` or `-DinstallPlaywrightNoDeps`, the build assumes Playwright Chromium is already installed on the host. If it is not installed, the UI test phase fails when Playwright tries to launch the browser (for example, with a missing browser executable error). In that case, rerun with one of the install flags or install the browser ahead of time via Playwright.
+
 Docker-less run of the behavior tests:
 
 ```bash
