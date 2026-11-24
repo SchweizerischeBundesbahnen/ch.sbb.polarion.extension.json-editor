@@ -131,7 +131,7 @@ class JsonEditorFormExtensionTest {
                     + (char) 13 + "tab" + (char) 9 + "ctrl" + (char) 1 + ".json";
             when(specialAttachment.getFileName()).thenReturn(specialName);
             // a second .json attachment forces the comma separator between array entries, and a third
-            // one reusing att1's id exercises the toMap merge function (duplicate key -> keep the first)
+            // one reusing att1's id exercises the duplicate handling (duplicate key -> keep the first)
             IAttachmentBase secondAttachment = mock(IAttachmentBase.class);
             when(secondAttachment.getId()).thenReturn("att2");
             when(secondAttachment.getFileName()).thenReturn("second.json");
