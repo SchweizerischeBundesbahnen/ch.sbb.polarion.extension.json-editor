@@ -44,11 +44,17 @@ export default function JsonEditorPanel({ context, attachments, onSaved }: JsonE
   const [editing, setEditing] = useState<boolean>(false);
   const [saving, setSaving] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [contentLoadFailed, setContentLoadFailed] = useState<boolean>(false);
+  // The attachment whose content is in the editor; null while a load is pending or after it failed.
+  const [loadedId, setLoadedId] = useState<string | null>(null);
   const [validation, setValidation] = useState<ValidationState | null>(null);
 
   const editorHostRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<JsonCodeEditor | null>(null);
+  // Identifies the latest content load, so that a late response of an earlier one is ignored.
+  const loadVersionRef = useRef(0);
+  // Attachments created by this panel (file name -> id). If the content update after the creation fails,
+  // the next save updates the created attachment, because the server rejects a second one of that name.
+  const createdIdsRef = useRef(new Map<string, string>());
 
   // spaceId set (Document) -> no prefix; WorkItem -> "<workItemId>-".
   const prefix = context.spaceId ? '' : `${context.entityId}-`;
@@ -65,7 +71,7 @@ export default function JsonEditorPanel({ context, attachments, onSaved }: JsonE
 
   const duplicate = isNew && duplicatesExistingFileName(newFileName);
   const nameValid = isNew && !!newFileName && !duplicate;
-  const editEnabled = !editing && !saving && !contentLoadFailed && (existingSelected || nameValid);
+  const editEnabled = !editing && !saving && (nameValid || (existingSelected && loadedId === selectedId));
 
   let warning = '';
   if (!editing && isNew) {
@@ -81,16 +87,20 @@ export default function JsonEditorPanel({ context, attachments, onSaved }: JsonE
     async (id: string) => {
       const editor = editorRef.current;
       if (!editor) return;
-      setContentLoadFailed(false);
+      const version = ++loadVersionRef.current;
+      setLoadedId(null);
       setErrorMessage(null);
       if (!id || id === NEW_FILE) {
         editor.setValue('');
         return;
       }
       try {
-        editor.setValue(await getAttachmentContent(sendRequest, context, id));
+        const content = await getAttachmentContent(sendRequest, context, id);
+        if (version !== loadVersionRef.current) return;
+        editor.setValue(content);
+        setLoadedId(id);
       } catch (e) {
-        setContentLoadFailed(true);
+        if (version !== loadVersionRef.current) return;
         setErrorMessage(e instanceof Error ? e.message : String(e));
       }
     },
@@ -159,7 +169,9 @@ export default function JsonEditorPanel({ context, attachments, onSaved }: JsonE
     try {
       let attachmentId = selectedId;
       if (isNew) {
-        attachmentId = await createAttachment(sendRequest, context, `${prefix}${newFileName}.json`);
+        const fileName = `${prefix}${newFileName}.json`;
+        attachmentId = createdIdsRef.current.get(fileName) ?? (await createAttachment(sendRequest, context, fileName));
+        createdIdsRef.current.set(fileName, attachmentId);
       }
       await updateAttachment(sendRequest, context, attachmentId, editor.getValue());
       (onSaved ?? (() => document.location.reload()))();

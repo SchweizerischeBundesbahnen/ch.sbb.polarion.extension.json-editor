@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import org.springframework.web.util.HtmlUtils;
 
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -151,11 +152,13 @@ public class JsonEditorFormExtension implements IFormExtension {
     }
 
     private Map<String, String> getJsonAttachmentNames(IPObjectList<?> attachments) {
-        return attachments.stream()
+        Map<String, String> names = new LinkedHashMap<>();
+        attachments.stream()
                 .filter(IAttachmentBase.class::isInstance)
                 .map(IAttachmentBase.class::cast)
                 .filter(x -> x.getFileName().endsWith(".json"))
-                .collect(java.util.stream.Collectors.toMap(IAttachmentBase::getId, IAttachmentBase::getFileName, (a, b) -> a, java.util.LinkedHashMap::new));
+                .forEachOrdered(x -> names.putIfAbsent(x.getId(), x.getFileName()));
+        return names;
     }
 
 }

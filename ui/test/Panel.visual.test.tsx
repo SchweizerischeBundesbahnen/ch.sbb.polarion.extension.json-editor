@@ -83,6 +83,7 @@ describe.skipIf(!__PIXEL_REFERENCES__)('JsonEditorPanel visual', () => {
     await vi.waitFor(() => expect($('#jsonCodeEditor textarea')).not.toBeNull());
     setControlValue($('#editor-selector') as HTMLSelectElement, 'att1', 'change');
     await vi.waitFor(() => expect(($('#jsonCodeEditor textarea') as HTMLTextAreaElement).value).toContain('example'));
+    await vi.waitFor(() => expect(($('#edit-json-button') as HTMLButtonElement).disabled).toBe(false));
     ($('#edit-json-button') as HTMLButtonElement).click();
     await vi.waitFor(() => expect(($('#validate-json-button') as HTMLButtonElement).disabled).toBe(false));
     ($('#validate-json-button') as HTMLButtonElement).click();
